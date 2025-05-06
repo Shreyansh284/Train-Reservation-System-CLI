@@ -10,12 +10,22 @@ namespace Train_Reservation_System_CLI
     {
         public string Source;
         public string Destination;
-        public Dictionary<string, int> RouteAndDistanceMap;
+        public Dictionary<string, int> RouteAndDistanceMap = new Dictionary<string, int>();
 
         public Route(string source, string destination)
         {
             Source = source;
             Destination = destination;
+        }
+
+        public bool IsValidRoute(string from, string to)
+        {
+            var keyRouteList = RouteAndDistanceMap.Keys.ToList();
+            return (keyRouteList.Contains(from) && keyRouteList.Contains(to) && keyRouteList.IndexOf(from) < keyRouteList.IndexOf(to));
+        }
+        public int GetDistance(string from, string to)
+        {
+            return RouteAndDistanceMap[to] - RouteAndDistanceMap[from];
         }
 
     }

@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Train_Reservation_System_CLI
 {
-    public enum CoachType
+    internal class InvalidInputExecption : Exception
     {
-        SL = 1,
-        A3 = 2,
-        A2 = 3,
-        A1 = 4
+        public InvalidInputExecption(string message) : base(message)
+        { }
+
     }
 }
