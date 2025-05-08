@@ -1,4 +1,6 @@
 ﻿
 using Train_Reservation_System_CLI;
 
-TrainConfiguration.RunTrainOperationsMenu();
+TrainConfiguration trainConfiguration = new TrainConfiguration();
+
+trainConfiguration.RunTrainOperationsMenu();

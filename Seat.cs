@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Train_Reservation_System_CLI
 {
-    internal class InvalidInputExecption : Exception
+    public class Seat
     {
-        public InvalidInputExecption(string message) : base(message)
-        { }
-
+        public string SeatNumber ;
+        public bool IsBooked = false;
     }
 }
-        

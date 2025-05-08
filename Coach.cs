@@ -5,7 +5,7 @@ public class Coach
     public string CoachID;
     public CoachType CoachType;
     public int TotalSeats;
-    public Dictionary<DateOnly, int> SeatsByDate = new Dictionary<DateOnly, int>();
+    public Dictionary<DateOnly, List<Seat>> SeatsByDate = new Dictionary<DateOnly, List<Seat>>();
 
     public Coach(string coachID, CoachType coachType, int totalSeats)
     {
@@ -19,12 +19,13 @@ public class Coach
     {
         if (SeatsByDate.ContainsKey(date))
         {
-            return TotalSeats - SeatsByDate[date];
+            return TotalSeats - SeatsByDate[date].Count;
         }
         else
         {
-            SeatsByDate.Add(date, 0);
-            return TotalSeats - SeatsByDate[date];
+            SeatsByDate.Add(date, new List<Seat>() );
+            return TotalSeats - SeatsByDate[date].Count;
+                ;
         }
     }
 }

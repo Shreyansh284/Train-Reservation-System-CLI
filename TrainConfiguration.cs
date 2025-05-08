@@ -2,19 +2,25 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Train_Reservation_System_CLI
 {
-    public class TrainConfiguration
+    class TrainConfiguration
     {
+        TrainManager trainManager;
+        BookingManager bookingManager;
 
-        public static void RunTrainOperationsMenu()
+        public TrainConfiguration()
         {
+            this.trainManager = new TrainManager();
+            this.bookingManager = new BookingManager(trainManager);
+        }
 
-            var trainManager = new TrainManager();
-            var reservationSystem = new ReservationSystem(trainManager);
+        public void RunTrainOperationsMenu()
+        {
 
             bool exit = false;
 
@@ -23,7 +29,7 @@ namespace Train_Reservation_System_CLI
                 try
                 {
                     int choice = InputHandler.GetChoiceFromMenu();
-                    HandleMenuChoice(choice, reservationSystem, trainManager, ref exit);
+                    HandleMenuChoice(choice, ref exit);
                 }
                 catch (InvalidInputExecption ex)
                 {
@@ -45,7 +51,7 @@ namespace Train_Reservation_System_CLI
 
         }
 
-        private static void HandleMenuChoice(int choice, ReservationSystem reservationSystem, TrainManager trainManager, ref bool exit)
+        private void HandleMenuChoice(int choice, ref bool exit)
         {
             switch (choice)
             {
@@ -53,12 +59,18 @@ namespace Train_Reservation_System_CLI
                     trainManager.AddTrain();
                     break;
                 case 2:
-                    BookTicket(reservationSystem);
+                    BookingRequest();
                     break;
                 case 3:
                     trainManager.GetAllTrains();
                     break;
                 case 4:
+                    bookingManager.GetBookingDetailsByPNR(InputHandler.GetInputForPNRNumber());
+                    break;
+                case 5:
+                    bookingManager.GenerateBookingReport();
+                    break;
+                case 6:
                     exit = true;
                     break;
                 default:
@@ -67,7 +79,7 @@ namespace Train_Reservation_System_CLI
             }
         }
 
-        private static void BookTicket(ReservationSystem reservationSystem)
+        private void BookingRequest()
         {
             var bookingDetails = InputHandler.GetBookingDetails();
             string from = bookingDetails[0];
@@ -76,14 +88,14 @@ namespace Train_Reservation_System_CLI
             CoachType coachType = (CoachType)Enum.Parse(typeof(CoachType), bookingDetails[3]);
             int seats = int.Parse(bookingDetails[4]);
 
-            string bookingMessage = reservationSystem.BookTicket(from, to, date, coachType, seats);
-            OutputHandler.PrintMessage(bookingMessage);
+            bookingManager.HandleBookingFlow(from, to, date, coachType, seats);
+
         }
 
         public static Train TrainDetails()
         {
             var (trainNumber, route) = ParseTrainRouteAndTrainNumber();
-            List<Coach> coaches = ParseTrainCoaches();
+            List<Coach> coaches = ParseTrainCoaches(trainNumber);
             Train train = new Train(trainNumber, route, coaches);
 
             return train;
@@ -112,9 +124,14 @@ namespace Train_Reservation_System_CLI
 
         }
 
-        public static List<Coach> ParseTrainCoaches()
+        public static List<Coach> ParseTrainCoaches(int trainNumber)
         {
+
             var splitedInput = InputHandler.GetInputForTrainCoaches();
+            if (trainNumber != int.Parse(splitedInput[0]))
+            {
+                throw new InvalidInputExecption("Train Number and Coach Number Must Be Same");
+            }
 
             List<Coach> coaches = new List<Coach>();
 

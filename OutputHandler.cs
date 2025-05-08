@@ -12,7 +12,22 @@ namespace Train_Reservation_System_CLI
         public static void PrintMessage(string message)
         {
             
-            Console.WriteLine($"{Seprater} {message} \n {Seprater}");
+            Console.WriteLine($"{Seprater} {message} \n{Seprater}");
+        }
+        public static void ShowTrainsForBookingRequest(List<Train> trains)
+        {
+            Console.WriteLine($"{Seprater} Following Are Available Trains \n ");
+            foreach (var train in trains)
+            {
+
+                Console.Write(train.TrainNumber + " ");
+            }
+            Console.WriteLine($"\n{Seprater}");    
+        }
+        
+        public static string ErrorInvalidPNR(int pnr)
+        {
+            return $"{Seprater} Invalid PNR: {pnr}. Please check and try again. \n {Seprater}";
         }
 
         public static void PrintAllTrains(List<Train> trains)
@@ -39,25 +54,26 @@ namespace Train_Reservation_System_CLI
             => new string('=', 50)+"\n";
 
         public static string ErrorInvalidSeatCount(int seatCount)
-                => $"{Seprater} Select Seats Between 1 to 24. You selected: {seatCount} \n {Seprater}";
+                => $"{Seprater} Select Seats Between 1 to 24. You selected: {seatCount} \n{Seprater}";
         public static string ErrorInvalidDate(DateOnly date)
-                => $"{Seprater} Invalid Date: {date}. Please select a date that is today or in the future. \n {Seprater}";
+                => $"{Seprater} Invalid Date: {date}. Please select a date that is today or in the future. \n{Seprater}";
 
         public static string ErrorCoachUnavailable(CoachType coachType)
-                => $" {Seprater} No {coachType} coach available on any train for the selected route. \n {Seprater}";
+                => $" {Seprater} No {coachType} coach available on any train for the selected route. \n{Seprater}";
 
         public static string ErrorInsufficientSeats(CoachType coachType, int available)
-                => $"{Seprater} Only {available} seats available in {coachType}. \n {Seprater}";
+                => $"{Seprater} Only {available} seats available in {coachType}. \n{Seprater}";
 
         public static string SuccessBooking(int pnr, double fare)
-                    => $""" 
-            ┌──────────────────────────────┐
-            │    Booking Confirmed!        │
-            ├──────────────────────────────┤
-            │  PNR     : {pnr,-15}         │
-            │  Fare    : INR {fare,-13:F2} │
-            └──────────────────────────────┘
-            """;
+        {
+            return string.Format(
+                "Booking Confirmed!\n" +
+                "-------------------\n" +
+                "PNR   : {0}\n" +
+                "Fare  : INR {1:F2}\n",
+                pnr, fare
+            );
+        }
         public static string ErrorNoTrainAvailable()
             => $"{Seprater} No Train Available for the given route. \n {Seprater}";
     }

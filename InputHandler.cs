@@ -15,10 +15,28 @@ namespace Train_Reservation_System_CLI
             Console.WriteLine("Enter 1 to Add Trains");
             Console.WriteLine("Enter 2 to Book Ticket");
             Console.WriteLine("Enter 3 to View All Trains");
-            Console.WriteLine("Enter 4 to Exit");
+            Console.WriteLine("Enter 4 to Get Booking Details By PNR Number");
+            Console.WriteLine("Enter 5 to Generate Bookings Report");
+            Console.WriteLine("Enter 6 to Exit");
             Console.WriteLine(OutputHandler.Seprater);
 
             return int.Parse(Console.ReadLine());
+        }
+        
+        public static int GetInputForPNRNumber()
+        {
+            Console.WriteLine(OutputHandler.Seprater);
+            Console.WriteLine("Enter PNR Number: ");
+            var pnrNumber = Int32.Parse(Console.ReadLine());
+            return pnrNumber;
+        }
+        public static int GetInputForTrainNumber()
+        {
+            Console.WriteLine(OutputHandler.Seprater);
+            Console.WriteLine("Enter Train Number: ");
+            var trainNumber = Int32.Parse(Console.ReadLine());
+
+            return trainNumber;
         }
 
         public static string[] GetBookingDetails()

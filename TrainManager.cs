@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Train_Reservation_System_CLI
 {
-    public class TrainManager
+    class TrainManager
     {
         public List<Train> Trains = new List<Train>();
 
@@ -24,5 +24,11 @@ namespace Train_Reservation_System_CLI
         {
             OutputHandler.PrintAllTrains(Trains);
         }
+
+        public List<Train> GetTrainsByRoute(string from ,string to)
+        {
+            return Trains.Where(t => t.HasRoute(from, to)).ToList();
+        }
+
     }
 }
