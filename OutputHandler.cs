@@ -64,14 +64,16 @@ namespace Train_Reservation_System_CLI
         public static string ErrorInsufficientSeats(CoachType coachType, int available)
                 => $"{Seprater} Only {available} seats available in {coachType}. \n{Seprater}";
 
-        public static string SuccessBooking(int pnr, double fare)
+        public static string SuccessBooking(int pnr, double fare,int waitingSeats,int confirmedSeats)
         {
             return string.Format(
                 "Booking Confirmed!\n" +
                 "-------------------\n" +
                 "PNR   : {0}\n" +
-                "Fare  : INR {1:F2}\n",
-                pnr, fare
+                "Waiting Seats   : {1}\n" +
+                "Confirmed Seats  : {2}\n"+
+                "Fare  : INR {3:F2}\n",
+                pnr,waitingSeats,confirmedSeats, fare
             );
         }
         public static string ErrorNoTrainAvailable()

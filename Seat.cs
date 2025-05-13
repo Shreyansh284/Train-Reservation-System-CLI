@@ -8,7 +8,7 @@ namespace Train_Reservation_System_CLI
 {
     public class Seat
     {
-        public string SeatNumber ;
+        public string SeatNumber;
         public bool IsBooked = false;
     }
 }

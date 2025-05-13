@@ -17,12 +17,25 @@ namespace Train_Reservation_System_CLI
             Console.WriteLine("Enter 3 to View All Trains");
             Console.WriteLine("Enter 4 to Get Booking Details By PNR Number");
             Console.WriteLine("Enter 5 to Generate Bookings Report");
-            Console.WriteLine("Enter 6 to Exit");
+            Console.WriteLine("Enter 6 for Booking Cancellation");
+            Console.WriteLine("Enter 7 to Exit");
             Console.WriteLine(OutputHandler.Seprater);
 
             return int.Parse(Console.ReadLine());
         }
         
+        public static string GetInputForCancellation()
+        {
+            Console.WriteLine(OutputHandler.Seprater);
+            Console.WriteLine("Enter PNR Number & Number of Seats To Cancel Booking: ( eg.. 10000002 5) ");
+            var cancellationDetail = Console.ReadLine();
+            //if (cancellationDetail.Length < 2 || cancellationDetail.Length>2)
+            //{
+            //    throw new InvalidInputExecption("Please Enter Detail As Given In Example");
+            //}
+            return cancellationDetail;
+        }
+
         public static int GetInputForPNRNumber()
         {
             Console.WriteLine(OutputHandler.Seprater);

@@ -12,6 +12,7 @@ namespace Train_Reservation_System_CLI
         public int TrainNumber;
         public Route Route;
         public List<Coach> Coaches = new List<Coach>();
+        public Waitlist Waitlist = new Waitlist();
 
         public Train(int TrainNumber, Route Route, List<Coach> Coaches)
         {

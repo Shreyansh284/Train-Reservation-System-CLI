@@ -71,6 +71,9 @@ namespace Train_Reservation_System_CLI
                     bookingManager.GenerateBookingReport();
                     break;
                 case 6:
+                    bookingManager.TicketCancellation(InputHandler.GetInputForCancellation());
+                    break;
+                case 7:
                     exit = true;
                     break;
                 default:

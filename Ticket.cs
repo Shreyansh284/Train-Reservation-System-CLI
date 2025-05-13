@@ -14,10 +14,12 @@ namespace Train_Reservation_System_CLI
         public string To;
         public DateOnly Date;
         public CoachType CoachType;
-        public List<string> SeatNumbers;
+        public int WaitingSeats;
+        public List<Seat> BookedSeats;
+        public int TotalNoOfSeats;
         public double Fare;
 
-        public Ticket(int pnr, int trainNumber, string from, string to, DateOnly date, CoachType coachType, List<string> seatNumbers, double fare)
+        public Ticket(int pnr, int trainNumber, string from, string to, DateOnly date, CoachType coachType, int seatsInWaiting, List<Seat> bookedSeats, int totalSeats, double fare)
         {
             PNR = pnr;
             TrainNumber = trainNumber;
@@ -25,20 +27,24 @@ namespace Train_Reservation_System_CLI
             To = to;
             Date = date;
             CoachType = coachType;
-            SeatNumbers = seatNumbers;
+            WaitingSeats = seatsInWaiting;
+            BookedSeats = bookedSeats;
+            TotalNoOfSeats = totalSeats;
             Fare = fare;
         }
         public override string ToString()
         {
             return
                 $"========== TICKET DETAILS ==========\n" +
-                $"PNR          : {PNR}\n" +
-                $"From         : {From}\n" +
-                $"To           : {To}\n" +
-                $"Date         : {Date}\n" +
-                $"Coach Type   : {CoachType}\n" +
-                $"Seat Numbers : {string.Join(", ", SeatNumbers)}\n" +
-                $"Fare         : INR {Fare:F2}\n" +
+                $"PNR              : {PNR}\n" +
+                $"From             : {From}\n" +
+                $"To               : {To}\n" +
+                $"Coach Type       : {CoachType}\n" +
+                $"Date             : {Date}\n" +
+                $"Seats In Waiting : {WaitingSeats}\n" +
+                $"Booked Seats     : {string.Join(", ", BookedSeats.Select(s=>s.SeatNumber))}\n" +
+                $"Total Seats      : {TotalNoOfSeats}\n" +
+                $"Fare             : INR {Fare:F2}\n" +
                 $"====================================";
 
         }
