@@ -1,8 +1,8 @@
-﻿namespace Train_Reservation_System_CLI;
+﻿namespace Train_Reservation_System_CLI.Models;
 
 public class Coach
 {
-    public string CoachID;                                                          
+    public string CoachID;
     public CoachType CoachType;
     public int TotalSeats;
     public Dictionary<DateOnly, List<Seat>> SeatsByDate = new Dictionary<DateOnly, List<Seat>>();

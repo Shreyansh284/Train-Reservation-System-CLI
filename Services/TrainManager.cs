@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Train_Reservation_System_CLI.Models;
 
-namespace Train_Reservation_System_CLI
+namespace Train_Reservation_System_CLI.Services
 {
     class TrainManager
     {
@@ -25,7 +26,7 @@ namespace Train_Reservation_System_CLI
             OutputHandler.PrintAllTrains(Trains);
         }
 
-        public List<Train> GetTrainsByRoute(string from ,string to)
+        public List<Train> GetTrainsByRoute(string from, string to)
         {
             return Trains.Where(t => t.HasRoute(from, to)).ToList();
         }

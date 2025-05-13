@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Train_Reservation_System_CLI
+namespace Train_Reservation_System_CLI.Services
 {
     public static class InputHandler
     {
@@ -23,7 +23,7 @@ namespace Train_Reservation_System_CLI
 
             return int.Parse(Console.ReadLine());
         }
-        
+
         public static string GetInputForCancellation()
         {
             Console.WriteLine(OutputHandler.Seprater);
@@ -40,14 +40,14 @@ namespace Train_Reservation_System_CLI
         {
             Console.WriteLine(OutputHandler.Seprater);
             Console.WriteLine("Enter PNR Number: ");
-            var pnrNumber = Int32.Parse(Console.ReadLine());
+            var pnrNumber = int.Parse(Console.ReadLine());
             return pnrNumber;
         }
         public static int GetInputForTrainNumber()
         {
             Console.WriteLine(OutputHandler.Seprater);
             Console.WriteLine("Enter Train Number: ");
-            var trainNumber = Int32.Parse(Console.ReadLine());
+            var trainNumber = int.Parse(Console.ReadLine());
 
             return trainNumber;
         }
@@ -57,7 +57,7 @@ namespace Train_Reservation_System_CLI
             Console.WriteLine(OutputHandler.Seprater);
             Console.WriteLine("Enter Booking Details : ( e.g.,Ahmedabad Surat 2023-03-15 SL 3)");
             var trainBooking = Console.ReadLine().Split(" ");
-            if (trainBooking.Length<5)
+            if (trainBooking.Length < 5)
             {
                 throw new InvalidInputExecption("Please Enter Detail As Given In Example");
             }
@@ -82,7 +82,7 @@ namespace Train_Reservation_System_CLI
             Console.WriteLine(OutputHandler.Seprater);
             Console.WriteLine("Enter Train Route: (e.g., 29772 Vadodara-0 Dahod-150 Indore-350 ) ");
             var trainRoute = Console.ReadLine().Split(" ");
-            if (trainRoute.Length < 3) 
+            if (trainRoute.Length < 3)
             {
                 throw new InvalidInputExecption("Please Enter Detail As Given In Example");
             }

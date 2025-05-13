@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Train_Reservation_System_CLI
+namespace Train_Reservation_System_CLI.Models
 {
     public class Ticket
     {
@@ -42,7 +42,7 @@ namespace Train_Reservation_System_CLI
                 $"Coach Type       : {CoachType}\n" +
                 $"Date             : {Date}\n" +
                 $"Seats In Waiting : {WaitingSeats}\n" +
-                $"Booked Seats     : {string.Join(", ", BookedSeats.Select(s=>s.SeatNumber))}\n" +
+                $"Booked Seats     : {string.Join(", ", BookedSeats.Select(s => s.SeatNumber))}\n" +
                 $"Total Seats      : {TotalNoOfSeats}\n" +
                 $"Fare             : INR {Fare:F2}\n" +
                 $"====================================";

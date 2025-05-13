@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Train_Reservation_System_CLI.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Train_Reservation_System_CLI
+namespace Train_Reservation_System_CLI.Services
 {
     class BookingManager
     {
@@ -106,24 +107,24 @@ namespace Train_Reservation_System_CLI
         {
             var coaches = train.Coaches.Where(c => c.CoachType == coachType).ToList();
             var (bookedSeats, WaitingSeats) = BookSeatsAcrossCoachesWithWaiting(coaches, date, noOfSeats);
-            
+
             double fare = CalculateFare(train.Route.GetDistance(from, to), coachType, noOfSeats);
             Ticket ticket = GenerateTicket(train.TrainNumber, from, to, date, coachType, WaitingSeats, bookedSeats, noOfSeats, fare);
-            if(WaitingSeats>0)
+            if (WaitingSeats > 0)
             {
-                if(ticket.CoachType==CoachType.SL)
+                if (ticket.CoachType == CoachType.SL)
                 {
                     train.Waitlist.SLWaitlist.Add(ticket);
-                }   
-                if(ticket.CoachType==CoachType.A3)
+                }
+                if (ticket.CoachType == CoachType.A3)
                 {
                     train.Waitlist.A3Waitlist.Add(ticket);
-                } 
-                if(ticket.CoachType==CoachType.A2)
+                }
+                if (ticket.CoachType == CoachType.A2)
                 {
                     train.Waitlist.A2Waitlist.Add(ticket);
-                } 
-                if(ticket.CoachType==CoachType.A1)
+                }
+                if (ticket.CoachType == CoachType.A1)
                 {
                     train.Waitlist.A1Waitlist.Add(ticket);
                 }
@@ -148,19 +149,19 @@ namespace Train_Reservation_System_CLI
         {
             List<Seat> bookedSeats = new List<Seat>();
             List<Seat> unassignedSeats = coaches
-                                        .Where(c => c.SeatsByDate.ContainsKey(date)) 
-                                        .SelectMany(c => c.SeatsByDate[date]) 
-                                        .Where(s => !s.IsBooked) 
-                                        .ToList(); 
+                                        .Where(c => c.SeatsByDate.ContainsKey(date))
+                                        .SelectMany(c => c.SeatsByDate[date])
+                                        .Where(s => !s.IsBooked)
+                                        .ToList();
             if (unassignedSeats.Any())
             {
                 foreach (var seat in unassignedSeats)
                 {
                     if (seatsToBook > 0)
                     {
-                        seat.IsBooked = true; 
+                        seat.IsBooked = true;
                         bookedSeats.Add(seat);
-                        seatsToBook--;        
+                        seatsToBook--;
                     }
                 }
             }
@@ -238,12 +239,12 @@ namespace Train_Reservation_System_CLI
 
         public void TicketCancellation(string cancellationDetails)
         {
-            CancalledTicketInfo cancalledTicketInfo= GetCancelledSeats(cancellationDetails);
+            CancalledTicketInfo cancalledTicketInfo = GetCancelledSeats(cancellationDetails);
             if (cancalledTicketInfo.ConfirmedCancelledSeats.Count == 0)
                 OutputHandler.PrintMessage($"Your {cancalledTicketInfo.WaitingCancelledSeats} Waiting Seats Are Cancelled Successfully");
             else
                 OutputHandler.PrintMessage($"Your {cancalledTicketInfo.ConfirmedCancelledSeats.Count} Confirmed Seats  & {cancalledTicketInfo.WaitingCancelledSeats} Waiting Seats Are Cancelled Successfully");
-                AssignCancelledSeats(cancalledTicketInfo);
+            AssignCancelledSeats(cancalledTicketInfo);
         }
         public void AssignCancelledSeats(CancalledTicketInfo cancalledTicketInfo)
         {
@@ -260,7 +261,7 @@ namespace Train_Reservation_System_CLI
                 while (wait.WaitingSeats > 0 && cancalledTicketInfo.ConfirmedCancelledSeats.Count > 0)
                 {
                     wait.WaitingSeats--;
-                    Seat seat= cancalledTicketInfo.ConfirmedCancelledSeats[cancalledTicketInfo.ConfirmedCancelledSeats.Count-1];
+                    Seat seat = cancalledTicketInfo.ConfirmedCancelledSeats[cancalledTicketInfo.ConfirmedCancelledSeats.Count - 1];
                     seat.IsBooked = true;
                     wait.BookedSeats.Add(seat);
                     OutputHandler.PrintMessage($"Ticket with PNR {wait.PNR} has been assigned a seat - ({seat.SeatNumber}) from the waitlist.");
@@ -283,8 +284,8 @@ namespace Train_Reservation_System_CLI
 
         public CancalledTicketInfo GetCancelledSeats(string cancellationDetails)
         {
-            List<Seat> cancelledSeats=new List<Seat>();
-            string [] splitDetails = cancellationDetails.Split(' ');
+            List<Seat> cancelledSeats = new List<Seat>();
+            string[] splitDetails = cancellationDetails.Split(' ');
             int PNR = int.Parse(splitDetails[0]);
             int noOfSeatsToCancel = int.Parse(splitDetails[1]);
             Ticket ticket = Tickets[PNR];
@@ -298,7 +299,7 @@ namespace Train_Reservation_System_CLI
 
             Train train = trainManager.Trains.FirstOrDefault(t => t.TrainNumber == ticket.TrainNumber);
 
-            
+
             if (ticket.WaitingSeats >= noOfSeatsToCancel)
             {
                 ticket.WaitingSeats -= noOfSeatsToCancel;
@@ -318,12 +319,12 @@ namespace Train_Reservation_System_CLI
                         case CoachType.A1:
                             train.Waitlist.A1Waitlist.Remove(ticket);
                             break;
-                }
+                    }
                     ticket.TotalNoOfSeats -= noOfSeatsToCancel;
                     ticket.Fare = CalculateFare(train.Route.GetDistance(ticket.From, ticket.To), ticket.CoachType, ticket.TotalNoOfSeats);
-                    return new CancalledTicketInfo(ticket.TrainNumber,ticket.From,ticket.To,ticket.CoachType,ticket.Date,cancelledSeats,noOfSeatsToCancel);
-                   
-                
+                    return new CancalledTicketInfo(ticket.TrainNumber, ticket.From, ticket.To, ticket.CoachType, ticket.Date, cancelledSeats, noOfSeatsToCancel);
+
+
                 }
             }
 
@@ -351,19 +352,19 @@ namespace Train_Reservation_System_CLI
 
                 }
             }
-                for (int i = 0; i < toCancelFromConfirmed; i++)
-                {
-                    Seat seat = ticket.BookedSeats[ticket.BookedSeats.Count - 1];
-                    seat.IsBooked = false;
-                    ticket.BookedSeats.RemoveAt(ticket.BookedSeats.Count-1);
-                    cancelledSeats.Add(seat);
-                }
-                ticket.TotalNoOfSeats -= noOfSeatsToCancel;
-                ticket.Fare=CalculateFare(train.Route.GetDistance(ticket.From, ticket.To), ticket.CoachType,ticket.TotalNoOfSeats);
+            for (int i = 0; i < toCancelFromConfirmed; i++)
+            {
+                Seat seat = ticket.BookedSeats[ticket.BookedSeats.Count - 1];
+                seat.IsBooked = false;
+                ticket.BookedSeats.RemoveAt(ticket.BookedSeats.Count - 1);
+                cancelledSeats.Add(seat);
+            }
+            ticket.TotalNoOfSeats -= noOfSeatsToCancel;
+            ticket.Fare = CalculateFare(train.Route.GetDistance(ticket.From, ticket.To), ticket.CoachType, ticket.TotalNoOfSeats);
 
-            return new CancalledTicketInfo(ticket.TrainNumber, ticket.From, ticket.To, ticket.CoachType, ticket.Date, cancelledSeats, noOfSeatsToCancel-toCancelFromConfirmed);
-            
+            return new CancalledTicketInfo(ticket.TrainNumber, ticket.From, ticket.To, ticket.CoachType, ticket.Date, cancelledSeats, noOfSeatsToCancel - toCancelFromConfirmed);
+
         }
-        
+
     }
 }

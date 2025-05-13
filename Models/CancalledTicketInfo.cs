@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Train_Reservation_System_CLI
+namespace Train_Reservation_System_CLI.Models
 {
     public class CancalledTicketInfo
     {
@@ -14,7 +14,7 @@ namespace Train_Reservation_System_CLI
         public string To;
         public CoachType CoachType;
         public DateOnly Date;
-        public List<Seat> ConfirmedCancelledSeats =new();
+        public List<Seat> ConfirmedCancelledSeats = new();
         public int WaitingCancelledSeats;
 
         public CancalledTicketInfo(int trainNumber, string from, string to, CoachType coachType, DateOnly date, List<Seat> confirmedCancelledSeats, int waitingCancelledSeats)

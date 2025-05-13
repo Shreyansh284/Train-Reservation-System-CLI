@@ -5,8 +5,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Train_Reservation_System_CLI.Models;
 
-namespace Train_Reservation_System_CLI
+namespace Train_Reservation_System_CLI.Services
 {
     class TrainConfiguration
     {
@@ -15,8 +16,8 @@ namespace Train_Reservation_System_CLI
 
         public TrainConfiguration()
         {
-            this.trainManager = new TrainManager();
-            this.bookingManager = new BookingManager(trainManager);
+            trainManager = new TrainManager();
+            bookingManager = new BookingManager(trainManager);
         }
 
         public void RunTrainOperationsMenu()

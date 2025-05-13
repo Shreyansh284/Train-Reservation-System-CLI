@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Train_Reservation_System_CLI
+namespace Train_Reservation_System_CLI.Models
 {
     public class Seat
     {

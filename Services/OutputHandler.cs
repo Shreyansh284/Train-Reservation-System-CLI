@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Train_Reservation_System_CLI.Models;
 
-namespace Train_Reservation_System_CLI
+namespace Train_Reservation_System_CLI.Services
 {
     public static class OutputHandler
     {
 
         public static void PrintMessage(string message)
         {
-            
+
             Console.WriteLine($"{Seprater} {message} \n{Seprater}");
         }
         public static void ShowTrainsForBookingRequest(List<Train> trains)
@@ -22,9 +23,9 @@ namespace Train_Reservation_System_CLI
 
                 Console.Write(train.TrainNumber + " ");
             }
-            Console.WriteLine($"\n{Seprater}");    
+            Console.WriteLine($"\n{Seprater}");
         }
-        
+
         public static string ErrorInvalidPNR(int pnr)
         {
             return $"{Seprater} Invalid PNR: {pnr}. Please check and try again. \n {Seprater}";
@@ -51,7 +52,7 @@ namespace Train_Reservation_System_CLI
         }
 
         public static string Seprater
-            => new string('=', 50)+"\n";
+            => new string('=', 50) + "\n";
 
         public static string ErrorInvalidSeatCount(int seatCount)
                 => $"{Seprater} Select Seats Between 1 to 24. You selected: {seatCount} \n{Seprater}";
@@ -64,16 +65,16 @@ namespace Train_Reservation_System_CLI
         public static string ErrorInsufficientSeats(CoachType coachType, int available)
                 => $"{Seprater} Only {available} seats available in {coachType}. \n{Seprater}";
 
-        public static string SuccessBooking(int pnr, double fare,int waitingSeats,int confirmedSeats)
+        public static string SuccessBooking(int pnr, double fare, int waitingSeats, int confirmedSeats)
         {
             return string.Format(
                 "Booking Confirmed!\n" +
                 "-------------------\n" +
                 "PNR   : {0}\n" +
                 "Waiting Seats   : {1}\n" +
-                "Confirmed Seats  : {2}\n"+
+                "Confirmed Seats  : {2}\n" +
                 "Fare  : INR {3:F2}\n",
-                pnr,waitingSeats,confirmedSeats, fare
+                pnr, waitingSeats, confirmedSeats, fare
             );
         }
         public static string ErrorNoTrainAvailable()
