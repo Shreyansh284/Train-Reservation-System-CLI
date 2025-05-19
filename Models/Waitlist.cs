@@ -8,10 +8,14 @@ namespace Train_Reservation_System_CLI.Models
 {
     public class Waitlist
     {
-        public List<Ticket> SLWaitlist = new List<Ticket>();
-        public List<Ticket> A3Waitlist = new List<Ticket>();
-        public List<Ticket> A2Waitlist = new List<Ticket>();
-        public List<Ticket> A1Waitlist = new List<Ticket>();
+        public Dictionary<CoachType, List<Ticket>> Waitlists { get; set; } = new();
 
+        public Waitlist()
+        {
+            Waitlists[CoachType.SL] = new List<Ticket>();
+            Waitlists[CoachType.A3] = new List<Ticket>();
+            Waitlists[CoachType.A2] = new List<Ticket>();
+            Waitlists[CoachType.A1] = new List<Ticket>();
+        }
     }
 }

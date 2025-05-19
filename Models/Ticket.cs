@@ -46,7 +46,6 @@ namespace Train_Reservation_System_CLI.Models
                 $"Total Seats      : {TotalNoOfSeats}\n" +
                 $"Fare             : INR {Fare:F2}\n" +
                 $"====================================";
-
         }
     }
 }
