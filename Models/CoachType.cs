@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Train_Reservation_System_CLI.Models;
 
-namespace Train_Reservation_System_CLI.Models
+public enum CoachType
 {
-    public enum CoachType
-    {
-        SL = 1,
-        A3 = 2,
-        A2 = 3,
-        A1 = 4
-    }
+    SL = 1,
+    A3 = 2,
+    A2 = 3,
+    A1 = 4
 }

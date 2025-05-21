@@ -4,8 +4,8 @@ public class Coach
 {
     public string CoachID;
     public CoachType CoachType;
+    public Dictionary<DateOnly, List<Seat>> SeatsByDate = new();
     public int TotalSeats;
-    public Dictionary<DateOnly, List<Seat>> SeatsByDate = new Dictionary<DateOnly, List<Seat>>();
 
     public Coach(string coachID, CoachType coachType, int totalSeats)
     {
@@ -16,13 +16,9 @@ public class Coach
 
     public int GetAvailableSeats(DateOnly date)
     {
-        if (!SeatsByDate.ContainsKey(date))
-        {
-            SeatsByDate[date] = new List<Seat>();
-        }
+        if (!SeatsByDate.ContainsKey(date)) SeatsByDate[date] = new List<Seat>();
 
-        int bookedCount = SeatsByDate[date].Count(seat => seat.IsBooked);
+        var bookedCount = SeatsByDate[date].Count(seat => seat.IsBooked);
         return TotalSeats - bookedCount;
     }
-
 }

@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Train_Reservation_System_CLI.Models;
 
-namespace Train_Reservation_System_CLI.Models
+public class BookingRequest
 {
-    public class BookingRequest
-    {
-        public string From {  get; set; }
-        public string To { get; set; }
-        public DateOnly Date { get; set; }
-        public CoachType CoachType { get; set; }
-        public int NoOfSeats { get; set; }
-    }
+    public string From { get; set; }
+    public string To { get; set; }
+    public DateOnly Date { get; set; }
+    public CoachType CoachType { get; set; }
+    public int NoOfSeats { get; set; }
 }

@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Train_Reservation_System_CLI.Models;
 
-namespace Train_Reservation_System_CLI.Models
+public class Route
 {
-    public class Route
+    public Route()
     {
-        public string Source;
-        public string Destination;
-        public Dictionary<string, int> RouteAndDistanceMap = new Dictionary<string, int>();
+        RouteStations = new List<RouteStation>();
+    }
 
-        public Route(string source, string destination)
-        {
-            Source = source;
-            Destination = destination;
-        }
+    public List<RouteStation> RouteStations { get; }
 
-        public bool IsValidRoute(string from, string to)
-        {
-            var keyRouteList = RouteAndDistanceMap.Keys.ToList();
-            return keyRouteList.Contains(from) && keyRouteList.Contains(to) && keyRouteList.IndexOf(from) < keyRouteList.IndexOf(to);
-        }
-        public int GetDistance(string from, string to)
-        {
-            return RouteAndDistanceMap[to] - RouteAndDistanceMap[from];
-        }
+    public bool IsValidRoute(string from, string to)
+    {
+        var stationNames = RouteStations.Select(s => s.StationName).ToList();
 
+        var fromIndex = stationNames.IndexOf(from);
+        var toIndex = stationNames.IndexOf(to);
+
+        return fromIndex >= 0 && toIndex >= 0 && fromIndex < toIndex;
+    }
+
+    public int GetDistance(string from, string to)
+    {
+        var fromStation = RouteStations.FirstOrDefault(s => s.StationName == from);
+        var toStation = RouteStations.FirstOrDefault(s => s.StationName == to);
+        return toStation.DistanceFromStart - fromStation.DistanceFromStart;
     }
 }

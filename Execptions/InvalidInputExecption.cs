@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Train_Reservation_System_CLI.Execptions;
 
-namespace Train_Reservation_System_CLI.Execptions
+internal class InvalidInputExecption : Exception
 {
-    internal class InvalidInputExecption : Exception
+    public InvalidInputExecption(string message) : base(message)
     {
-        public InvalidInputExecption(string message) : base(message)
-        { }
-
     }
 }
