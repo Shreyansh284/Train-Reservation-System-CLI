@@ -1,6 +1,6 @@
 ﻿namespace Train_Reservation_System_CLI.Validators;
 
-public class InputValidator
+public static class InputValidator
 {
     public static bool IsOutOfRange(int? max, int? min, int value)
     {

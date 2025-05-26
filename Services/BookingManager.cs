@@ -2,7 +2,7 @@
 using Train_Reservation_System_CLI.IOHandlers;
 using Train_Reservation_System_CLI.Models;
 using Train_Reservation_System_CLI.Parsers;
-using Train_Reservation_System_CLI.Validators;
+using static Train_Reservation_System_CLI.Services.SeatAllocator;
 using static Train_Reservation_System_CLI.Utils.InputUtils;
 
 
@@ -19,111 +19,73 @@ internal class BookingManager
         this.ticketManager = ticketManager;
     }
 
-    public void GetBookingDetails()
+    public void HandleBookingFlow()
     {
-        var input = InputHandler.ReadInput("Enter Booking Details : ( e.g.,Ahmedabad Surat 2023-03-15 SL 3)");
-        var bookingDetails = SplitInput(input);
-        if (InputValidator.IsOutOfRange(5, 5, bookingDetails.Length))
-            throw new InvalidInputExecption("Please Enter Details As Shown In Above Example");
-        var bookingRequest = BookingParser.ParseBookingDetails(bookingDetails);
+        var request = ReadAndValidateBookingRequest();
 
-        HandleBookingFlow(bookingRequest);
-    }
-
-    public void HandleBookingFlow(BookingRequest bookingRequest)
-    {
-        if (bookingRequest.NoOfSeats <= 0 || bookingRequest.NoOfSeats > 24)
-            throw new InvalidInputExecption(OutputHandler.ErrorInvalidSeatCount(bookingRequest.NoOfSeats));
-        if (!(bookingRequest.Date >= DateOnly.FromDateTime(DateTime.Today)))
-            throw new InvalidInputExecption(OutputHandler.ErrorInvalidDate(bookingRequest.Date));
-
-        var trains = FetchMatchingTrain(bookingRequest);
-        if (trains.Count == 0)
+        var availableTrains = GetTrainsForRequest(request);
+        if (availableTrains.Count == 0)
             throw new InvalidInputExecption(OutputHandler.ErrorNoTrainAvailable());
 
-        OutputHandler.ShowTrainsForBookingRequest(trains);
+        OutputHandler.ShowTrainsForBookingRequest(availableTrains);
 
-        var input = InputHandler.ReadInput("Select/Enter Train Number To Proceed Booking");
-        var selectedTrainNumber = ParseInt(input);
-        var selectedTrain = trains.FirstOrDefault(t => t.TrainNumber == selectedTrainNumber);
+        var selectedTrain = GetSelectedTrain(availableTrains);
+        if (selectedTrain == null)
+            throw new InvalidInputExecption(OutputHandler.ErrorNoTrainAvailable());
 
-        if (selectedTrain == null) throw new InvalidInputExecption(OutputHandler.ErrorNoTrainAvailable());
-
-        BookTicket(selectedTrain, bookingRequest);
+        ConfirmBooking(selectedTrain, request);
     }
 
-    public void BookTicket(Train train, BookingRequest bookingRequest)
+    private BookingRequest ReadAndValidateBookingRequest()
     {
-        var coaches = train.Coaches.Where(c => c.CoachType == bookingRequest.CoachType).ToList();
-        var seatAllocationResult =
-            BookSeatsAcrossCoachesWithWaiting(coaches, bookingRequest.Date, bookingRequest.NoOfSeats);
+        var input = InputHandler.ReadInput("Enter Booking Details: (e.g., Ahmedabad Surat 2023-03-15 SL 3)");
+        var parts = SplitInput(input);
 
-        var fare = FareCalculator.CalculateFare(train.Route.GetDistance(bookingRequest.From, bookingRequest.To),
-            bookingRequest.CoachType, bookingRequest.NoOfSeats);
-        var ticket = ticketManager.GenerateTicket(bookingRequest, train.TrainNumber, seatAllocationResult.WaitingSeats,
-            seatAllocationResult.BookedSeats, fare);
+        if (parts.Length != 5)
+            throw new InvalidInputExecption("Please enter details in the correct format.");
 
-        if (seatAllocationResult.WaitingSeats > 0) ticketManager.AddTicketInWaitingList(ticket, train);
+        var request = BookingParser.ParseBookingDetails(parts);
+
+        if (request.NoOfSeats <= 0 || request.NoOfSeats > 24)
+            throw new InvalidInputExecption(OutputHandler.ErrorInvalidSeatCount(request.NoOfSeats));
+
+        if (request.Date < DateOnly.FromDateTime(DateTime.Today))
+            throw new InvalidInputExecption(OutputHandler.ErrorInvalidDate(request.Date));
+
+        return request;
+    }
+
+    private List<Train> GetTrainsForRequest(BookingRequest request)
+    {
+        var byRoute = trainManager.GetTrainsByRoute(request.From, request.To);
+        if (byRoute.Count == 0) return new();
+
+        return trainManager.GetTrainsByCoachType(byRoute, request.CoachType);
+    }
+
+    private Train GetSelectedTrain(List<Train> trains)
+    {
+        var input = InputHandler.ReadInput("Enter Train Number:");
+        var trainNo = ParseInt(input);
+        return trains.First(t => t.TrainNumber == trainNo);
+    }
+
+    private void ConfirmBooking(Train train, BookingRequest request)
+    {
+        var result = AllocateSeats(train, request);
+
+        var fare = FareCalculator.CalculateFare(
+            train.Route.GetDistance(request.From, request.To),
+            request.CoachType,
+            request.NoOfSeats
+        );
+
+        var ticket = ticketManager.GenerateTicket(request, train.TrainNumber,
+            result.WaitingSeats, result.BookedSeats, fare);
+
+        if (result.WaitingSeats > 0)
+            ticketManager.AddTicketInTrainWaitingList(ticket, train);
 
         ticketManager.DisplayTicket(ticket);
-    }
-
-    private SeatAllocationResult BookSeatsAcrossCoachesWithWaiting(List<Coach> coaches, DateOnly date, int seatsToBook)
-    {
-        SeatAllocationResult seatAllocationResult = new();
-
-        var unassignedSeats = coaches
-            .Where(c => c.SeatsByDate.ContainsKey(date))
-            .SelectMany(c => c.SeatsByDate[date])
-            .Where(s => !s.IsBooked)
-            .ToList();
-        if (unassignedSeats.Any())
-            foreach (var seat in unassignedSeats)
-                if (seatsToBook > 0)
-                {
-                    seat.IsBooked = true;
-                    seatAllocationResult.BookedSeats.Add(seat);
-                    seatsToBook--;
-                }
-
-        foreach (var coach in coaches)
-        {
-            var available = coach.GetAvailableSeats(date);
-            var currentSeatCount = coach.SeatsByDate[date].Count;
-            var toBook = Math.Min(seatsToBook, available);
-
-            for (var i = 1; i <= toBook; i++)
-            {
-                var seat = new Seat();
-                seat.SeatNumber = $"{coach.CoachID}-{currentSeatCount + i}";
-                seat.IsBooked = true;
-                coach.SeatsByDate[date].Add(seat);
-
-                seatAllocationResult.BookedSeats.Add(seat);
-            }
-
-            seatsToBook -= toBook;
-
-            if (seatsToBook == 0)
-                break;
-        }
-
-        seatAllocationResult.WaitingSeats = seatsToBook;
-        return seatAllocationResult;
-    }
-
-    public List<Train> FetchMatchingTrain(BookingRequest bookingRequest)
-    {
-        var matchingTrains = new List<Train>();
-
-        var availableTrainsByRoute = trainManager.GetTrainsByRoute(bookingRequest.From, bookingRequest.To);
-
-        if (availableTrainsByRoute.Count != 0)
-        {
-            var trainsByCoachType = trainManager.GetTrainsByCoachType(availableTrainsByRoute, bookingRequest.CoachType);
-            matchingTrains.AddRange(trainsByCoachType);
-        }
-
-        return matchingTrains;
     }
 }

@@ -7,7 +7,7 @@ public class Train
     public List<Coach> Coaches = new();
     public Route Route;
     public int TrainNumber;
-    public Waitlist Waitlist = new();
+    public List<Ticket> WaitingTickets = new();
 
     public Train(int TrainNumber, Route Route, List<Coach> Coaches)
     {
@@ -16,14 +16,21 @@ public class Train
         this.Coaches = Coaches;
     }
 
+    public List<Ticket> GetWaitlistByCoachTypeAndDate(CoachType coachType, DateOnly journeyDate)
+    {
+        return WaitingTickets
+            .Where(t => t.CoachType == coachType && t.Date == journeyDate)
+            .ToList();
+    }
+
     public bool HasRoute(string from, string to)
     {
         return Route.IsValidRoute(from, to);
     }
 
-    public Coach HasCoach(CoachType coachType)
+    public bool HasCoach(CoachType coachType)
     {
-        return Coaches.Find(c => c.CoachType == coachType);
+        return Coaches.Any(c => c.CoachType == coachType);
     }
 
     public override string ToString()

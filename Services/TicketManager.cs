@@ -9,7 +9,7 @@ public class TicketManager
 {
     private int PNR = 10000000;
 
-    public Dictionary<int, Ticket> Tickets = new();
+    private Dictionary<int, Ticket> Tickets = new();
 
     public Ticket GenerateTicket(BookingRequest bookingRequest, int trainNumber, int seatsInWaiting,
         List<Seat> bookedSeats, double fare)
@@ -45,15 +45,20 @@ public class TicketManager
     {
         var input = InputHandler.ReadInput("Enter PNR Number For Getting Booking Details");
         var pnr = ParseInt(input);
-        if (!Tickets.ContainsKey(pnr)) throw new InvalidInputExecption(OutputHandler.ErrorInvalidPNR(pnr));
+        if (!Tickets.TryGetValue(pnr, out var ticket))
+            throw new InvalidInputExecption(OutputHandler.ErrorInvalidPNR(pnr));
 
-        var ticket = Tickets[pnr];
         OutputHandler.PrintMessage(ticket.ToString());
     }
 
-    public void AddTicketInWaitingList(Ticket ticket, Train train)
+    public void AddTicketInTrainWaitingList(Ticket ticket, Train train)
     {
-        if (train.Waitlist.Waitlists.TryGetValue(ticket.CoachType, out var waitlist)) waitlist.Add(ticket);
+        train.WaitingTickets.Add(ticket);
+    }
+
+    public Ticket GetTicketByPNR(int pnr)
+    {
+        return Tickets[pnr];
     }
 
     public void GenerateBookingReport()

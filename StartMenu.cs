@@ -7,9 +7,8 @@ namespace Train_Reservation_System_CLI;
 public class StartMenu
 {
     private readonly BookingManager bookingManager;
-    private readonly TicketCancellationManager ticketCancellationManager;
+    private readonly CancellationManager cancellationManager;
     private readonly TicketManager ticketManager;
-
     private readonly TrainManager trainManager;
 
 
@@ -18,7 +17,7 @@ public class StartMenu
         trainManager = new TrainManager();
         ticketManager = new TicketManager();
         bookingManager = new BookingManager(trainManager, ticketManager);
-        ticketCancellationManager = new TicketCancellationManager(ticketManager, trainManager);
+        cancellationManager = new CancellationManager(ticketManager);
     }
 
     public void RunTrainOperationsMenu()
@@ -50,7 +49,7 @@ public class StartMenu
                 trainManager.AddTrains();
                 break;
             case 2:
-                bookingManager.GetBookingDetails();
+                bookingManager.HandleBookingFlow();
                 break;
             case 3:
                 trainManager.GetAllTrains();
@@ -62,7 +61,7 @@ public class StartMenu
                 ticketManager.GenerateBookingReport();
                 break;
             case 6:
-                ticketCancellationManager.GetCancellationDetails();
+                cancellationManager.HandleCancellation();
                 break;
             default:
                 OutputHandler.PrintError("Invalid Choice");

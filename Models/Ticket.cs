@@ -28,6 +28,7 @@ public class Ticket
         Fare = fare;
     }
 
+
     public override string ToString()
     {
         return

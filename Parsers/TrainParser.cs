@@ -16,7 +16,7 @@ public static class TrainParser
             var station = input[0];
             var stationDistance = ParseInt(input[1]);
 
-            route.RouteStations.Add(new RouteStation(station, stationDistance));
+            route.AddRouteStation(new RouteStation(station, stationDistance));
         }
 
         return route;

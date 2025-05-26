@@ -1,16 +1,16 @@
 ﻿namespace Train_Reservation_System_CLI.Models;
 
-public class CancalledTicketInfo
+public class CancellationRecord
 {
     public CoachType CoachType;
-    public List<Seat> ConfirmedCancelledSeats = new();
+    public List<Seat> ConfirmedCancelledSeats ;
     public DateOnly Date;
     public string From;
     public string To;
     public int TrainNumber;
     public int WaitingCancelledSeats;
 
-    public CancalledTicketInfo(int trainNumber, string from, string to, CoachType coachType, DateOnly date,
+    public CancellationRecord(int trainNumber, string from, string to, CoachType coachType, DateOnly date,
         List<Seat> confirmedCancelledSeats, int waitingCancelledSeats)
     {
         TrainNumber = trainNumber;

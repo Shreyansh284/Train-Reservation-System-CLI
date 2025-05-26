@@ -11,7 +11,7 @@ namespace Train_Reservation_System_CLI.Services;
 
 internal class TrainManager
 {
-    public static List<Train> Trains = new();
+    public static readonly List<Train> Trains = new();
 
     public void AddTrains()
     {
@@ -36,22 +36,23 @@ internal class TrainManager
         Trains.Add(train);
     }
 
-    public static Train GetTrainDetails()
+    private static Train GetTrainDetails()
     {
-        var trainNumberAndRoute =InputHandler.ReadInput("Enter Train Number and Route: (e.g.,29772 Vadodara-0 Dahod-150 Indore-350)");
-        var splitedTrainNumberAndRoute = SplitInput(trainNumberAndRoute);
-        if (InputValidator.IsOutOfRange(null, 3, splitedTrainNumberAndRoute.Length))
+        var trainNumberAndRoute =
+            InputHandler.ReadInput("Enter Train Number and Route: (e.g.,29772 Vadodara-0 Dahod-150 Indore-350)");
+        var splitTrainNumberAndRoute = SplitInput(trainNumberAndRoute);
+        if (InputValidator.IsOutOfRange(null, 3, splitTrainNumberAndRoute.Length))
             throw new InvalidInputExecption("Please Enter Details As Shown In Example");
-        var trainNumber = ParseInt(splitedTrainNumberAndRoute[0]);
-        var route = TrainParser.ParseTrainRoute(splitedTrainNumberAndRoute);
+        var trainNumber = ParseInt(splitTrainNumberAndRoute[0]);
+        var route = TrainParser.ParseTrainRoute(splitTrainNumberAndRoute);
 
         var trainCoaches = InputHandler.ReadInput("Enter Train Coaches: ( e.g., 29772 S1-72 S2-72 B1-72 A1-48)");
-        var splitedTrainCoaches = SplitInput(trainCoaches);
-        if (InputValidator.IsOutOfRange(null, 2, splitedTrainNumberAndRoute.Length))
+        var splitTrainCoaches = SplitInput(trainCoaches);
+        if (InputValidator.IsOutOfRange(null, 2, splitTrainNumberAndRoute.Length))
             throw new InvalidInputExecption("Please Enter Details As Shown In Example");
-        var coaches = TrainParser.ParseTrainCoaches(trainNumber, splitedTrainCoaches);
+        var coaches = TrainParser.ParseTrainCoaches(trainNumber, splitTrainCoaches);
 
-        var train = TrainDomainModelGenerator.GenerateTrainDominModel(new ParsedTrain(trainNumber, route, coaches));
+        var train = TrainDomainModelGenerator.GenerateTrainDomainModel(new ParsedTrain(trainNumber, route, coaches));
 
         return train;
     }
@@ -70,7 +71,7 @@ internal class TrainManager
     {
         List<Train> matchingTrains = new();
         foreach (var train in trains)
-            if (train.HasCoach(coachType) != null)
+            if (train.HasCoach(coachType))
                 matchingTrains.Add(train);
         return matchingTrains;
     }

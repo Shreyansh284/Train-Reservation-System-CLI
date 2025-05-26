@@ -2,6 +2,17 @@
 
 public class Seat
 {
-    public bool IsBooked = false;
     public string SeatNumber;
+    public List<Reservation> Reservations ;
+
+    public Seat(string seatNumber)
+    {
+        SeatNumber = seatNumber;
+        Reservations = new List<Reservation>();
+    }
+
+    public void AddReservation(Reservation reservation)
+    {
+        Reservations.Add(reservation);
+    }
 }
