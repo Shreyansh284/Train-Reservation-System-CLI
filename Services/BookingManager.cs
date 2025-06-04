@@ -57,10 +57,10 @@ internal class BookingManager
 
     private List<Train> GetTrainsForRequest(BookingRequest request)
     {
-        var byRoute = trainManager.GetTrainsByRoute(request.From, request.To);
-        if (byRoute.Count == 0) return new();
+        var trains = trainManager.GetTrainsByRoute(request.From, request.To);
+        if (trains.Count == 0) return new();
 
-        return trainManager.GetTrainsByCoachType(byRoute, request.CoachType);
+        return trainManager.FilterTrainsByCoachType(trains, request.CoachType);
     }
 
     private Train GetSelectedTrain(List<Train> trains)

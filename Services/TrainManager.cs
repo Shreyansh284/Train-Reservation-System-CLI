@@ -19,10 +19,7 @@ internal class TrainManager
 
         var input = InputHandler.ReadInput("Enter number of trains to be added: ");
         var count = ParseInt(input);
-
-        if (InputValidator.IsOutOfRange(max, min, count))
-            throw new InvalidInputExecption($"Value must be between {min} and {max}");
-
+        TrainValidator.ValidateNumberOfTrain(count);
         for (var i = 0; i < count; i++)
         {
             var train = GetTrainDetails();
@@ -36,13 +33,12 @@ internal class TrainManager
         Trains.Add(train);
     }
 
-    private static Train GetTrainDetails()
+    public static Train GetTrainDetails()
     {
         var trainNumberAndRoute =
             InputHandler.ReadInput("Enter Train Number and Route: (e.g.,29772 Vadodara-0 Dahod-150 Indore-350)");
         var splitTrainNumberAndRoute = SplitInput(trainNumberAndRoute);
-        if (InputValidator.IsOutOfRange(null, 3, splitTrainNumberAndRoute.Length))
-            throw new InvalidInputExecption("Please Enter Details As Shown In Example");
+        TrainValidator.ValidateTrainNumberAndRoute(splitTrainNumberAndRoute);
         var trainNumber = ParseInt(splitTrainNumberAndRoute[0]);
         var route = TrainParser.ParseTrainRoute(splitTrainNumberAndRoute);
 
@@ -67,12 +63,8 @@ internal class TrainManager
         return Trains.Where(t => t.HasRoute(from, to)).ToList();
     }
 
-    public List<Train> GetTrainsByCoachType(List<Train> trains, CoachType coachType)
+    public List<Train> FilterTrainsByCoachType(List<Train> trains, CoachType coachType)
     {
-        List<Train> matchingTrains = new();
-        foreach (var train in trains)
-            if (train.HasCoach(coachType))
-                matchingTrains.Add(train);
-        return matchingTrains;
+        return trains.Where(train => train.HasCoach(coachType)).ToList();
     }
 }
