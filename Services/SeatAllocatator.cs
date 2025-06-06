@@ -13,10 +13,8 @@ public static class SeatAllocator
         var reservedSeats = coaches.SelectMany(c => c.GetReservedSeats(request.Date)).ToList();
         int remaining = request.NoOfSeats;
 
-        // Step 1: Reuse existing reserved seats
-        remaining = AssignFromReservedSeats(reservedSeats, stations, request, result, remaining);
+            remaining = AssignFromReservedSeats(reservedSeats, stations, request, result, remaining);
 
-        // Step 2: Allocate fresh seats
         if (remaining > 0)
             remaining = AssignNewSeats(coaches, request, result, remaining);
 

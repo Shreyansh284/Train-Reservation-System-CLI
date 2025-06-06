@@ -22,7 +22,7 @@ internal class CancellationManager
 
         var record = ProcessCancellation(details);
 
-        DisplayCancellationMessage(record);
+        OutputHandler.DisplayCancellationMessage(record);
         ReassignCancelledSeatsToWaitlist(record);
     }
 
@@ -39,7 +39,6 @@ internal class CancellationManager
 
         var train = TrainManager.Trains.First(t => t.TrainNumber == ticket.TrainNumber);
 
-        // Cancel waiting seats first, then confirmed ones
         int waitingToCancel = CancelWaitingSeats(ticket, train, seatsToCancel);
         int remainingSeatsToCancel = seatsToCancel - waitingToCancel;
 
@@ -91,15 +90,6 @@ internal class CancellationManager
         }
 
         return cancelledSeats;
-    }
-
-    private void DisplayCancellationMessage(CancellationRecord record)
-    {
-        string message = record.ConfirmedCancelledSeats.Count == 0
-            ? $"Your {record.WaitingCancelledSeats} Waiting Seats Are Cancelled Successfully"
-            : $"Your {record.ConfirmedCancelledSeats.Count} Confirmed Seats & {record.WaitingCancelledSeats} Waiting Seats Are Cancelled Successfully";
-
-        OutputHandler.PrintMessage(message);
     }
 
     private void ReassignCancelledSeatsToWaitlist(CancellationRecord record)

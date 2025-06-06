@@ -22,10 +22,15 @@ internal class TrainManager
         TrainValidator.ValidateNumberOfTrain(count);
         for (var i = 0; i < count; i++)
         {
-            var train = GetTrainDetails();
-            AddSingleTrain(train);
+            AddTrainFromDetails();
             OutputHandler.PrintMessage("Train Added Successfully");
         }
+    }
+
+    public static void AddTrainFromDetails()
+    {
+        var train = GetTrainDetails();
+        AddSingleTrain(train);
     }
 
     private static void AddSingleTrain(Train train)
@@ -38,14 +43,13 @@ internal class TrainManager
         var trainNumberAndRoute =
             InputHandler.ReadInput("Enter Train Number and Route: (e.g.,29772 Vadodara-0 Dahod-150 Indore-350)");
         var splitTrainNumberAndRoute = SplitInput(trainNumberAndRoute);
-        TrainValidator.ValidateTrainNumberAndRoute(splitTrainNumberAndRoute);
+        TrainValidator.ValidateTrainNumberAndRouteInput(splitTrainNumberAndRoute);
         var trainNumber = ParseInt(splitTrainNumberAndRoute[0]);
         var route = TrainParser.ParseTrainRoute(splitTrainNumberAndRoute);
 
         var trainCoaches = InputHandler.ReadInput("Enter Train Coaches: ( e.g., 29772 S1-72 S2-72 B1-72 A1-48)");
         var splitTrainCoaches = SplitInput(trainCoaches);
-        if (InputValidator.IsOutOfRange(null, 2, splitTrainNumberAndRoute.Length))
-            throw new InvalidInputExecption("Please Enter Details As Shown In Example");
+        TrainValidator.ValidateTrainCoachesInput(trainNumber, splitTrainCoaches);
         var coaches = TrainParser.ParseTrainCoaches(trainNumber, splitTrainCoaches);
 
         var train = TrainDomainModelGenerator.GenerateTrainDomainModel(new ParsedTrain(trainNumber, route, coaches));

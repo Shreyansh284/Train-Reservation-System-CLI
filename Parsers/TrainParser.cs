@@ -27,9 +27,6 @@ public static class TrainParser
 
     public static List<Coach> ParseTrainCoaches(int trainNumber, string[] coachesInput)
     {
-        if (trainNumber != ParseInt(coachesInput[0]))
-            throw new InvalidInputExecption("Train Number and Coach Number Must Be Same");
-
         var coaches = new List<Coach>();
 
         for (var i = 1; i < coachesInput.Length; i++)
@@ -37,10 +34,8 @@ public static class TrainParser
             var coachParts = coachesInput[i].Split(Seperator);
             var coachId = coachParts[0];
             var seats = ParseInt(coachParts[1]);
-
-            if (seats > 0 && seats > 72) throw new InvalidInputExecption("Seats Must Be Between 1 to 72");
-
             var type = GetCoachType(coachId);
+
             TrainValidator.ValidateCoachIdRange(coachId, type);
 
             coaches.Add(new Coach(coachId, type, seats));

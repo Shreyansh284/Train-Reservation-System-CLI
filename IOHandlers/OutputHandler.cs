@@ -91,4 +91,12 @@ public static class OutputHandler
     {
         return "No Train Available for the given route.";
     }
+    public static void DisplayCancellationMessage(CancellationRecord record)
+    {
+        string message = record.ConfirmedCancelledSeats.Count == 0
+            ? $"Your {record.WaitingCancelledSeats} Waiting Seats Are Cancelled Successfully"
+            : $"Your {record.ConfirmedCancelledSeats.Count} Confirmed Seats & {record.WaitingCancelledSeats} Waiting Seats Are Cancelled Successfully";
+
+        OutputHandler.PrintMessage(message);
+    }
 }

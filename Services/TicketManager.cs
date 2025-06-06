@@ -1,6 +1,7 @@
 ﻿using Train_Reservation_System_CLI.Execptions;
 using Train_Reservation_System_CLI.IOHandlers;
 using Train_Reservation_System_CLI.Models;
+using Train_Reservation_System_CLI.Validators;
 using static Train_Reservation_System_CLI.Utils.InputUtils;
 
 namespace Train_Reservation_System_CLI.Services;
@@ -9,7 +10,7 @@ public class TicketManager
 {
     private int PNR = 10000000;
 
-    private Dictionary<int, Ticket> Tickets = new();
+    private List<Ticket> Tickets = new();
 
     public Ticket GenerateTicket(BookingRequest bookingRequest, int trainNumber, int seatsInWaiting,
         List<Seat> bookedSeats, double fare)
@@ -30,7 +31,7 @@ public class TicketManager
             fare
         );
 
-        Tickets.Add(currentPNR, ticket);
+        Tickets.Add(ticket);
 
         return ticket;
     }
@@ -45,9 +46,8 @@ public class TicketManager
     {
         var input = InputHandler.ReadInput("Enter PNR Number For Getting Booking Details");
         var pnr = ParseInt(input);
-        if (!Tickets.TryGetValue(pnr, out var ticket))
-            throw new InvalidInputExecption(OutputHandler.ErrorInvalidPNR(pnr));
-
+        BookingValidator.ValidatePNR(Tickets,pnr);
+        var ticket= GetTicketByPNR(pnr);
         OutputHandler.PrintMessage(ticket.ToString());
     }
 
@@ -58,7 +58,7 @@ public class TicketManager
 
     public Ticket GetTicketByPNR(int pnr)
     {
-        return Tickets[pnr];
+        return Tickets.First(t => t.PNR == pnr);
     }
 
     public void GenerateBookingReport()
@@ -69,7 +69,7 @@ public class TicketManager
             return;
         }
 
-        var sortedTickets = Tickets.Values.OrderBy(t => t.Date).ThenBy(t => t.PNR);
+        var sortedTickets = Tickets.OrderBy(t => t.Date).ThenBy(t => t.PNR);
 
         const int chunkSize = 6;
 

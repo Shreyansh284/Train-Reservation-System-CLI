@@ -2,6 +2,7 @@
 using Train_Reservation_System_CLI.IOHandlers;
 using Train_Reservation_System_CLI.Models;
 using Train_Reservation_System_CLI.Parsers;
+using Train_Reservation_System_CLI.Validators;
 using static Train_Reservation_System_CLI.Services.SeatAllocator;
 using static Train_Reservation_System_CLI.Utils.InputUtils;
 
@@ -24,14 +25,10 @@ internal class BookingManager
         var request = ReadAndValidateBookingRequest();
 
         var availableTrains = GetTrainsForRequest(request);
-        if (availableTrains.Count == 0)
-            throw new InvalidInputExecption(OutputHandler.ErrorNoTrainAvailable());
 
         OutputHandler.ShowTrainsForBookingRequest(availableTrains);
 
         var selectedTrain = GetSelectedTrain(availableTrains);
-        if (selectedTrain == null)
-            throw new InvalidInputExecption(OutputHandler.ErrorNoTrainAvailable());
 
         ConfirmBooking(selectedTrain, request);
     }
@@ -57,10 +54,13 @@ internal class BookingManager
 
     private List<Train> GetTrainsForRequest(BookingRequest request)
     {
-        var trains = trainManager.GetTrainsByRoute(request.From, request.To);
-        if (trains.Count == 0) return new();
+        var trainsByRoute = trainManager.GetTrainsByRoute(request.From, request.To);
+         BookingValidator.ValidateTrainsByRoute(trainsByRoute, request);
 
-        return trainManager.FilterTrainsByCoachType(trains, request.CoachType);
+        var filteredTrains = trainManager.FilterTrainsByCoachType(trainsByRoute, request.CoachType);
+         BookingValidator.ValidateTrainsByCoachType(filteredTrains, request);
+
+        return filteredTrains;
     }
 
     private Train GetSelectedTrain(List<Train> trains)

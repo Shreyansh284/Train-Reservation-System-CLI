@@ -9,8 +9,9 @@ namespace Train_Reservation_System_CLI.Validators;
 public static class TrainValidator
 {
     const int MaxTrains = 50;
+    const int MaxSeats = 72;
+    const char Seperator = '-';
 
-    // const int Ma
     public static void ValidateNumberOfTrain(int count)
     {
         if (InputValidator.IsOutOfRange(MaxTrains, 0, count))
@@ -19,20 +20,79 @@ public static class TrainValidator
         }
     }
 
-    public static void ValidateTrainNumberAndRoute(string[] trainNumberAndRoute)
+    public static void ValidateTrainNumberAndRouteInput(string[] trainNumberAndRoute)
     {
         try
         {
             int trainNumber = ParseInt(trainNumberAndRoute[0]);
             if (trainNumber < 1) throw new InvalidInputExecption("Train Number Cannot Be Negative");
             if (trainNumberAndRoute.Length < 2)
-                throw new InvalidInputExecption("Input Must Contain Train Number And Atleast Source & Destination");
+                throw new InvalidInputExecption("Input Must Contain Train Number And Source & Destination");
+
+            for (var i = 1; i < trainNumberAndRoute.Length; i++)
+            {
+                var input = trainNumberAndRoute[i].Split(Seperator);
+                if (input.Length != 2)
+                    throw new InvalidInputExecption($"Route Must Have Name And Distance With Seperator ({Seperator})");
+            }
         }
         catch (Exception e)
         {
             OutputHandler.PrintError(e.Message);
-            TrainManager.GetTrainDetails();
+            // TrainManager.AddTrainFromDetails();
         }
+    }
+
+    public static void ValidateTrainCoachesInput(int trainNumber, string[] trainCoaches)
+    {
+        try
+        {
+            if (trainNumber != ParseInt(trainCoaches[0]))
+                throw new InvalidInputExecption("Train Number and Coach Number Must Be Same");
+
+            ValidateAtLeastOneSleeperCoach(trainCoaches);
+
+            for (var i = 1; i < trainCoaches.Length; i++)
+            {
+                var coachParts = trainCoaches[i].Split(Seperator);
+                var coachId = coachParts[0];
+                var seats = ParseInt(coachParts[1]);
+
+                if (InputValidator.IsOutOfRange(MaxSeats, 1, seats))
+                {
+                    throw new InvalidInputExecption($"Value must be between {1} and {MaxSeats}");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            OutputHandler.PrintError(e.Message);
+            // TrainManager.GetTrainDetails();
+        }
+    }
+
+    public static void ValidateAtLeastOneSleeperCoach(string[] coachesInput)
+    {
+        for (int i = 1; i < coachesInput.Length; i++)
+        {
+            var coachId = coachesInput[i].Split(Seperator)[0];
+            var type = GetCoachType(coachId);
+
+            if (type == CoachType.SL)
+                return; // Valid, at least one SL exists
+        }
+
+        throw new InvalidInputExecption("At least one Sleeper class (SL) coach is required.");
+    }
+
+    private static CoachType GetCoachType(string coachId)
+    {
+        var type = coachId.StartsWith("S") ? CoachType.SL :
+            coachId.StartsWith("B") ? CoachType.A3 :
+            coachId.StartsWith("A") ? CoachType.A2 :
+            coachId.StartsWith("H") ? CoachType.A1 :
+            throw new InvalidInputExecption($"Unknown coach type for ID: {coachId}");
+        return type;
     }
 
     public static void ValidateCoachIdRange(string coachId, CoachType coachType)
