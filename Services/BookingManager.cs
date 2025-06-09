@@ -23,51 +23,65 @@ internal class BookingManager
     public void HandleBookingFlow()
     {
         var request = ReadAndValidateBookingRequest();
-
         var availableTrains = GetTrainsForRequest(request);
-
         OutputHandler.ShowTrainsForBookingRequest(availableTrains);
 
         var selectedTrain = GetSelectedTrain(availableTrains);
-
         ConfirmBooking(selectedTrain, request);
     }
 
     private BookingRequest ReadAndValidateBookingRequest()
     {
-        var input = InputHandler.ReadInput("Enter Booking Details: (e.g., Ahmedabad Surat 2023-03-15 SL 3)");
-        var parts = SplitInput(input);
+        try
+        {
+            var input = InputHandler.ReadInput("Enter Booking Details: (e.g., Ahmedabad Surat 2023-03-15 SL 3)");
+            var parts = SplitInput(input);
 
-        if (parts.Length != 5)
-            throw new InvalidInputExecption("Please enter details in the correct format.");
+            if (parts.Length != 5)
+                throw new InvalidInputExecption("Please enter details in the correct format.");
 
-        var request = BookingParser.ParseBookingDetails(parts);
+            var request = BookingParser.ParseBookingDetails(parts);
 
-        if (request.NoOfSeats <= 0 || request.NoOfSeats > 24)
-            throw new InvalidInputExecption(OutputHandler.ErrorInvalidSeatCount(request.NoOfSeats));
+            if (request.NoOfSeats <= 0 || request.NoOfSeats > 24)
+                throw new InvalidInputExecption(OutputHandler.ErrorInvalidSeatCount(request.NoOfSeats));
 
-        if (request.Date < DateOnly.FromDateTime(DateTime.Today))
-            throw new InvalidInputExecption(OutputHandler.ErrorInvalidDate(request.Date));
+            if (request.Date < DateOnly.FromDateTime(DateTime.Today))
+                throw new InvalidInputExecption(OutputHandler.ErrorInvalidDate(request.Date));
 
-        return request;
+            return request;
+        }
+        catch (Exception e)
+        {
+            OutputHandler.PrintError(e.Message);
+            return ReadAndValidateBookingRequest();
+        }
     }
 
     private List<Train> GetTrainsForRequest(BookingRequest request)
     {
         var trainsByRoute = trainManager.GetTrainsByRoute(request.From, request.To);
-         BookingValidator.ValidateTrainsByRoute(trainsByRoute, request);
+        BookingValidator.ValidateTrainsByRoute(trainsByRoute, request);
 
         var filteredTrains = trainManager.FilterTrainsByCoachType(trainsByRoute, request.CoachType);
-         BookingValidator.ValidateTrainsByCoachType(filteredTrains, request);
+        BookingValidator.ValidateTrainsByCoachType(filteredTrains, request);
 
         return filteredTrains;
     }
 
     private Train GetSelectedTrain(List<Train> trains)
     {
-        var input = InputHandler.ReadInput("Enter Train Number:");
-        var trainNo = ParseInt(input);
-        return trains.First(t => t.TrainNumber == trainNo);
+        try
+        {
+            var input = InputHandler.ReadInput("Enter Train Number For Booking :");
+            var trainNo = ParseInt(input);
+            BookingValidator.ValidateTrainSelection(trains, trainNo);
+            return trains.First(t => t.TrainNumber == trainNo);
+        }
+        catch (Exception e)
+        {
+            OutputHandler.PrintError(e.Message);
+            return GetSelectedTrain(trains);
+        }
     }
 
     private void ConfirmBooking(Train train, BookingRequest request)

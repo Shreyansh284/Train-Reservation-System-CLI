@@ -14,60 +14,44 @@ public static class TrainValidator
 
     public static void ValidateNumberOfTrain(int count)
     {
-        if (InputValidator.IsOutOfRange(MaxTrains, 0, count))
+        if (InputValidator.IsOutOfRange(MaxTrains, 1, count))
         {
-            throw new InvalidInputExecption($"Value must be between {0} and {MaxTrains}");
+            throw new InvalidInputExecption($"Value must be between {1} and {MaxTrains}");
         }
     }
 
     public static void ValidateTrainNumberAndRouteInput(string[] trainNumberAndRoute)
     {
-        try
-        {
-            int trainNumber = ParseInt(trainNumberAndRoute[0]);
-            if (trainNumber < 1) throw new InvalidInputExecption("Train Number Cannot Be Negative");
-            if (trainNumberAndRoute.Length < 2)
-                throw new InvalidInputExecption("Input Must Contain Train Number And Source & Destination");
+        int trainNumber = ParseInt(trainNumberAndRoute[0]);
+        if (trainNumber < 1) throw new InvalidInputExecption("Train Number Cannot Be Negative");
+        if (trainNumberAndRoute.Length < 2)
+            throw new InvalidInputExecption("Input Must Contain Train Number And Source & Destination");
 
-            for (var i = 1; i < trainNumberAndRoute.Length; i++)
-            {
-                var input = trainNumberAndRoute[i].Split(Seperator);
-                if (input.Length != 2)
-                    throw new InvalidInputExecption($"Route Must Have Name And Distance With Seperator ({Seperator})");
-            }
-        }
-        catch (Exception e)
+        for (var i = 1; i < trainNumberAndRoute.Length; i++)
         {
-            OutputHandler.PrintError(e.Message);
-            // TrainManager.AddTrainFromDetails();
+            var input = trainNumberAndRoute[i].Split(Seperator);
+            if (input.Length != 2)
+                throw new InvalidInputExecption($"Route Must Have Name And Distance With Seperator ({Seperator})");
         }
     }
 
     public static void ValidateTrainCoachesInput(int trainNumber, string[] trainCoaches)
     {
-        try
+        if (trainNumber != ParseInt(trainCoaches[0]))
+            throw new InvalidInputExecption("Train Number and Coach Number Must Be Same");
+
+        ValidateAtLeastOneSleeperCoach(trainCoaches);
+
+        for (var i = 1; i < trainCoaches.Length; i++)
         {
-            if (trainNumber != ParseInt(trainCoaches[0]))
-                throw new InvalidInputExecption("Train Number and Coach Number Must Be Same");
+            var coachParts = trainCoaches[i].Split(Seperator);
+            var coachId = coachParts[0];
+            var seats = ParseInt(coachParts[1]);
 
-            ValidateAtLeastOneSleeperCoach(trainCoaches);
-
-            for (var i = 1; i < trainCoaches.Length; i++)
+            if (InputValidator.IsOutOfRange(MaxSeats, 1, seats))
             {
-                var coachParts = trainCoaches[i].Split(Seperator);
-                var coachId = coachParts[0];
-                var seats = ParseInt(coachParts[1]);
-
-                if (InputValidator.IsOutOfRange(MaxSeats, 1, seats))
-                {
-                    throw new InvalidInputExecption($"Value must be between {1} and {MaxSeats}");
-                }
+                throw new InvalidInputExecption($"Value must be between {1} and {MaxSeats}");
             }
-        }
-        catch (Exception e)
-        {
-            OutputHandler.PrintError(e.Message);
-            // TrainManager.GetTrainDetails();
         }
     }
 

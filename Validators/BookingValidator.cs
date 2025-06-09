@@ -17,11 +17,21 @@ public static class BookingValidator
     {
         if (trains == null || trains.Count == 0)
         {
-            throw new InvalidOperationException($"No trains with coach type '{request.CoachType}' found between {request.From} and {request.To}.");
+            throw new InvalidOperationException(
+                $"No trains with coach type '{request.CoachType}' found between {request.From} and {request.To}.");
         }
     }
 
-    public static void ValidatePNR(List<Ticket> tickets,int pnr)
+    public static void ValidateTrainSelection(List<Train> availableTrains, int inputTrainNumber)
+    {
+        if (!availableTrains.Any(train => train.TrainNumber == inputTrainNumber))
+        {
+            throw new InvalidInputExecption(
+                $"Train selection {inputTrainNumber} is invalid. Enter Any Above Given Number");
+        }
+    }
+
+    public static void ValidatePNR(List<Ticket> tickets, int pnr)
     {
         bool isValid = tickets.Any(t => t.PNR == pnr);
         if (!isValid)
@@ -29,5 +39,4 @@ public static class BookingValidator
             throw new InvalidInputExecption($"Invalid PNR Number ({pnr}) For Getting Booking Details");
         }
     }
-
 }
