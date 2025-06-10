@@ -1,26 +1,20 @@
-﻿using Train_Reservation_System_CLI.Execptions;
-using Train_Reservation_System_CLI.IOHandlers;
+﻿using Train_Reservation_System_CLI.IOHandlers;
 using Train_Reservation_System_CLI.Models;
+using Train_Reservation_System_CLI.Validators;
 using static Train_Reservation_System_CLI.Utils.InputUtils;
 using static Train_Reservation_System_CLI.Validators.RouteValidator;
 
 namespace Train_Reservation_System_CLI.Services;
 
-internal class CancellationManager
+internal class CancellationManager(TicketManager ticketManager)
 {
-    private readonly TicketManager ticketManager;
-
-    public CancellationManager(TicketManager ticketManager)
-    {
-        this.ticketManager = ticketManager;
-    }
-
     public void HandleCancellation()
     {
         var input = InputHandler.ReadInput("Enter PNR Number & Number of Seats To Cancel Booking: (e.g., 10000002 5)");
-        var details = SplitInput(input);
+        var splitCancellationInput = SplitInput(input);
+        BookingCancellationValidator.ValidateCancellationInput(splitCancellationInput);
 
-        var record = ProcessCancellation(details);
+        var record = ProcessCancellation(splitCancellationInput);
 
         OutputHandler.DisplayCancellationMessage(record);
         ReassignCancelledSeatsToWaitlist(record);
@@ -31,11 +25,9 @@ internal class CancellationManager
         int pnr = ParseInt(details[0]);
         int seatsToCancel = ParseInt(details[1]);
 
-        var ticket = ticketManager.GetTicketByPNR(pnr)
-                     ?? throw new InvalidInputExecption(OutputHandler.ErrorInvalidPNR(pnr));
+        var ticket = ticketManager.GetTicketByPNR(pnr);
 
-        if (seatsToCancel > ticket.TotalNoOfSeats)
-            throw new InvalidInputExecption(OutputHandler.ErrorInvalidSeatCount(seatsToCancel));
+        BookingCancellationValidator.ValidateNumbersOfSeatsToCancel(seatsToCancel, ticket);
 
         var train = TrainManager.Trains.First(t => t.TrainNumber == ticket.TrainNumber);
 
@@ -61,6 +53,7 @@ internal class CancellationManager
             waitingToCancel
         );
     }
+
 
     private int CancelWaitingSeats(Ticket ticket, Train train, int seatsToCancel)
     {

@@ -58,7 +58,7 @@ public static class SeatAllocator
 
             for (int i = 1; i <= toBook; i++)
             {
-                var seat = new Seat($"{coach.CoachID}-{booked + i}");
+                var seat = new Seat($"{coach.CoachId}-{booked + i}");
                 var reservation = new Reservation(request.Date);
                 reservation.AddRequestedRoute(new BookedRoute(request.From, request.To));
                 seat.Reservations.Add(reservation);

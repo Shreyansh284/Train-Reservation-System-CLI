@@ -1,4 +1,4 @@
-﻿using Train_Reservation_System_CLI.Execptions;
+﻿using Train_Reservation_System_CLI.Exceptions;
 using Train_Reservation_System_CLI.Models;
 using Train_Reservation_System_CLI.Validators;
 using static Train_Reservation_System_CLI.Utils.InputUtils;
@@ -42,7 +42,7 @@ public static class TrainParser
         }
 
         if (coaches.All(c => c.CoachType != CoachType.SL))
-            throw new InvalidInputExecption("At least one Sleeper class (SL) coach is required.");
+            throw new InvalidInputException("At least one Sleeper class (SL) coach is required.");
 
         return coaches;
     }
@@ -53,7 +53,7 @@ public static class TrainParser
             coachId.StartsWith('B') ? CoachType.A3 :
             coachId.StartsWith('A') ? CoachType.A2 :
             coachId.StartsWith('H') ? CoachType.A1 :
-            throw new InvalidInputExecption($"Unknown coach type for ID: {coachId}");
+            throw new InvalidInputException($"Unknown coach type for ID: {coachId}");
         return type;
     }
 }

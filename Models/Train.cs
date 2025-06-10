@@ -2,19 +2,12 @@
 
 namespace Train_Reservation_System_CLI.Models;
 
-public class Train
+public class Train(int trainNumber, Route route, List<Coach> coaches)
 {
-    public List<Coach> Coaches = new();
-    public Route Route;
-    public int TrainNumber;
-    public List<Ticket> WaitingTickets = new();
-
-    public Train(int TrainNumber, Route Route, List<Coach> Coaches)
-    {
-        this.TrainNumber = TrainNumber;
-        this.Route = Route;
-        this.Coaches = Coaches;
-    }
+    public readonly List<Coach> Coaches = coaches;
+    public readonly Route Route = route;
+    public readonly int TrainNumber = trainNumber;
+    public readonly List<Ticket> WaitingTickets = new();
 
     public List<Ticket> GetWaitlistByCoachTypeAndDate(CoachType coachType, DateOnly journeyDate)
     {
@@ -55,7 +48,7 @@ public class Train
             builder.AppendLine("  No coaches available.");
         else
             foreach (var coach in Coaches)
-                builder.AppendLine($"    - {coach.CoachID} ({coach.CoachType})");
+                builder.AppendLine($"    - {coach.CoachId} ({coach.CoachType})");
 
         return builder.ToString().TrimEnd();
     }

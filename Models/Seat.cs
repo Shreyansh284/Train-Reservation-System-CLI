@@ -1,15 +1,9 @@
 ﻿namespace Train_Reservation_System_CLI.Models;
 
-public class Seat
+public class Seat(string seatNumber)
 {
-    public string SeatNumber;
-    public List<Reservation> Reservations ;
-
-    public Seat(string seatNumber)
-    {
-        SeatNumber = seatNumber;
-        Reservations = new List<Reservation>();
-    }
+    public readonly string SeatNumber = seatNumber;
+    public readonly List<Reservation> Reservations = new();
 
     public void AddReservation(Reservation reservation)
     {

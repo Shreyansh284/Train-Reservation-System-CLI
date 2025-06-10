@@ -1,21 +1,12 @@
 ﻿namespace Train_Reservation_System_CLI.Models;
 
-public class Coach
+public class Coach(string coachId, CoachType coachType, int totalSeats)
 {
-    public string CoachID;
-    public CoachType CoachType;
-    public List<Seat> Seats;
-    public int TotalSeats;
+    public readonly string CoachId = coachId;
+    public readonly CoachType CoachType = coachType;
+    public readonly List<Seat> Seats = new();
 
-    public Coach(string coachID, CoachType coachType, int totalSeats)
-    {
-        CoachID = coachID;
-        CoachType = coachType;
-        TotalSeats = totalSeats;
-        Seats = new List<Seat>();
-    }
-
-  public List<Seat> GetReservedSeats(DateOnly date)
+    public List<Seat> GetReservedSeats(DateOnly date)
     {
         return Seats.Where(s => s.Reservations.Any(r => r.Date == date)).ToList();
     }
@@ -23,6 +14,6 @@ public class Coach
     public int AvailableSeatsCount(DateOnly date)
     {
         int reservedSeats = GetReservedSeats(date).Count;
-        return TotalSeats - reservedSeats;
+        return totalSeats - reservedSeats;
     }
 }

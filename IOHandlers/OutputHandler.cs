@@ -6,7 +6,7 @@ public static class OutputHandler
 {
     public static string Separator => new('=', 50);
 
-    public static void PrintWrapped(string message)
+    private static void PrintWrapped(string message)
     {
         Console.WriteLine(Separator);
         Console.WriteLine(message);
@@ -46,7 +46,7 @@ public static class OutputHandler
             return;
         }
 
-        Console.WriteLine(string.Join(" ", trains.Select(t => t.TrainNumber)));
+        PrintMessage(string.Join(" ", trains.Select(t => t.TrainNumber)));
     }
 
     public static void PrintAllTrains(List<Train> trains)
@@ -58,7 +58,7 @@ public static class OutputHandler
         }
 
         PrintBanner("Train List");
-        foreach (var train in trains) Console.WriteLine(train);
+        foreach (var train in trains) PrintMessage(train.ToString());
     }
 
     // Error Message Helpers
@@ -77,26 +77,57 @@ public static class OutputHandler
         return $"Invalid Date: {date}. Please select a date that is today or in the future.";
     }
 
-    public static string ErrorCoachUnavailable(CoachType coachType)
-    {
-        return $"No {coachType} coach available on any train for the selected route.";
-    }
-
-    public static string ErrorInsufficientSeats(CoachType coachType, int available)
-    {
-        return $"Only {available} seats available in {coachType}.";
-    }
-
-    public static string ErrorNoTrainAvailable()
-    {
-        return "No Train Available for the given route.";
-    }
     public static void DisplayCancellationMessage(CancellationRecord record)
     {
         string message = record.ConfirmedCancelledSeats.Count == 0
             ? $"Your {record.WaitingCancelledSeats} Waiting Seats Are Cancelled Successfully"
             : $"Your {record.ConfirmedCancelledSeats.Count} Confirmed Seats & {record.WaitingCancelledSeats} Waiting Seats Are Cancelled Successfully";
+        PrintMessage(message);
+    }
 
-        OutputHandler.PrintMessage(message);
+    public static void DisplayReport(List<Ticket> tickets)
+    {
+        if (tickets.Count == 0)
+        {
+            OutputHandler.PrintError("No bookings found.");
+            return;
+        }
+
+        var sortedTickets = tickets.OrderBy(t => t.Date).ThenBy(t => t.PNR);
+
+        const int chunkSize = 6;
+
+        var header =
+            $"{"PNR",-10} | {"TrainNo",-8} | {"From",-10} | {"To",-10} | {"Date",-12} | {"CoachType",-10} | {"Confirmed Seats",-40} | {"Waiting",-8} | {"Fare",-6}";
+        var separator = new string('-', header.Length);
+
+        Console.WriteLine("=========== BOOKING REPORT ===========");
+        Console.WriteLine(header);
+        Console.WriteLine(separator);
+
+        foreach (var ticket in sortedTickets)
+        {
+            var seatChunks = FormatSeatChunks(ticket.BookedSeats, chunkSize);
+
+            Console.WriteLine(
+                $"{ticket.PNR,-10} | {ticket.TrainNumber,-8} | {ticket.From,-10} | {ticket.To,-10} | {ticket.Date.ToString("yyyy-MM-dd"),-12} | {ticket.CoachType,-10} | {seatChunks[0],-40} | {ticket.WaitingSeats,-8} | INR {ticket.Fare,-6:F2}"
+            );
+
+            for (var i = 1; i < seatChunks.Count; i++)
+                Console.WriteLine(
+                    $"{string.Empty,-10} | {string.Empty,-8} | {string.Empty,-10} | {string.Empty,-10} | {string.Empty,-12} | {string.Empty,-10} | {seatChunks[i],-40} | {string.Empty,-8} | {string.Empty,-6}"
+                );
+        }
+    }
+    private static List<string> FormatSeatChunks(List<Seat> seats, int chunkSize)
+    {
+        if (seats == null || seats.Count == 0)
+            return ["-"];
+
+        return seats
+            .Select((seat, index) => new { seat.SeatNumber, index })
+            .GroupBy(x => x.index / chunkSize)
+            .Select(group => string.Join(", ", group.Select(x => x.SeatNumber)))
+            .ToList();
     }
 }

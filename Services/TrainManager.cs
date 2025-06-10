@@ -32,7 +32,7 @@ internal class TrainManager
         }
     }
 
-    public static void AddTrainFromDetails()
+    private static void AddTrainFromDetails()
     {
         var train = GetTrainDetails();
         AddSingleTrain(train);
@@ -43,7 +43,7 @@ internal class TrainManager
         Trains.Add(train);
     }
 
-    public static Train GetTrainDetails()
+    private static Train GetTrainDetails()
     {
         var trainNumberAndRoute = GetTrainNumberAndRouteDetails();
         var coaches = GetCoaches(trainNumberAndRoute.TrainNumber);
@@ -53,7 +53,7 @@ internal class TrainManager
         return train;
     }
 
-    public static TrainNumberRouteDTO GetTrainNumberAndRouteDetails()
+    private static TrainNumberRouteDTO GetTrainNumberAndRouteDetails()
     {
         try
         {
@@ -72,7 +72,7 @@ internal class TrainManager
         }
     }
 
-    public static List<Coach> GetCoaches(int trainNumber)
+    private static List<Coach> GetCoaches(int trainNumber)
     {
         try
         {

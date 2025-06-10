@@ -1,24 +1,19 @@
 ﻿namespace Train_Reservation_System_CLI.Models;
 
-public class CancellationRecord
+public class CancellationRecord(
+    int trainNumber,
+    string from,
+    string to,
+    CoachType coachType,
+    DateOnly date,
+    List<Seat> confirmedCancelledSeats,
+    int waitingCancelledSeats)
 {
-    public CoachType CoachType;
-    public List<Seat> ConfirmedCancelledSeats ;
-    public DateOnly Date;
-    public string From;
-    public string To;
-    public int TrainNumber;
-    public int WaitingCancelledSeats;
-
-    public CancellationRecord(int trainNumber, string from, string to, CoachType coachType, DateOnly date,
-        List<Seat> confirmedCancelledSeats, int waitingCancelledSeats)
-    {
-        TrainNumber = trainNumber;
-        From = from;
-        To = to;
-        CoachType = coachType;
-        Date = date;
-        ConfirmedCancelledSeats = confirmedCancelledSeats;
-        WaitingCancelledSeats = waitingCancelledSeats;
-    }
+    public CoachType CoachType = coachType;
+    public List<Seat> ConfirmedCancelledSeats = confirmedCancelledSeats;
+    public DateOnly Date = date;
+    public string From = from;
+    public string To = to;
+    public int TrainNumber = trainNumber;
+    public int WaitingCancelledSeats = waitingCancelledSeats;
 }

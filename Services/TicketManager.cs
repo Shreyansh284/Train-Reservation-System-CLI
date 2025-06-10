@@ -1,5 +1,4 @@
-﻿using Train_Reservation_System_CLI.Execptions;
-using Train_Reservation_System_CLI.IOHandlers;
+﻿using Train_Reservation_System_CLI.IOHandlers;
 using Train_Reservation_System_CLI.Models;
 using Train_Reservation_System_CLI.Validators;
 using static Train_Reservation_System_CLI.Utils.InputUtils;
@@ -10,7 +9,7 @@ public class TicketManager
 {
     private int PNR = 10000000;
 
-    private List<Ticket> Tickets = new();
+    private readonly List<Ticket> _tickets = new();
 
     public Ticket GenerateTicket(BookingRequest bookingRequest, int trainNumber, int seatsInWaiting,
         List<Seat> bookedSeats, double fare)
@@ -31,7 +30,7 @@ public class TicketManager
             fare
         );
 
-        Tickets.Add(ticket);
+        _tickets.Add(ticket);
 
         return ticket;
     }
@@ -46,8 +45,8 @@ public class TicketManager
     {
         var input = InputHandler.ReadInput("Enter PNR Number For Getting Booking Details");
         var pnr = ParseInt(input);
-        BookingValidator.ValidatePNR(Tickets,pnr);
-        var ticket= GetTicketByPNR(pnr);
+        BookingValidator.ValidatePNR(_tickets, pnr);
+        var ticket = GetTicketByPNR(pnr);
         OutputHandler.PrintMessage(ticket.ToString());
     }
 
@@ -58,53 +57,12 @@ public class TicketManager
 
     public Ticket GetTicketByPNR(int pnr)
     {
-        return Tickets.First(t => t.PNR == pnr);
+        BookingValidator.ValidatePNR(_tickets, pnr);
+        return _tickets.Single(t => t.PNR == pnr);
     }
 
     public void GenerateBookingReport()
     {
-        if (Tickets.Count == 0)
-        {
-            OutputHandler.PrintError("No bookings found.");
-            return;
-        }
-
-        var sortedTickets = Tickets.OrderBy(t => t.Date).ThenBy(t => t.PNR);
-
-        const int chunkSize = 6;
-
-        var header =
-            $"{"PNR",-10} | {"TrainNo",-8} | {"From",-10} | {"To",-10} | {"Date",-12} | {"CoachType",-10} | {"Confirmed Seats",-40} | {"Waiting",-8} | {"Fare",-6}";
-        var separator = new string('-', header.Length);
-
-        Console.WriteLine("=========== BOOKING REPORT ===========");
-        Console.WriteLine(header);
-        Console.WriteLine(separator);
-
-        foreach (var ticket in sortedTickets)
-        {
-            var seatChunks = FormatSeatChunks(ticket.BookedSeats, chunkSize);
-
-            Console.WriteLine(
-                $"{ticket.PNR,-10} | {ticket.TrainNumber,-8} | {ticket.From,-10} | {ticket.To,-10} | {ticket.Date.ToString("yyyy-MM-dd"),-12} | {ticket.CoachType,-10} | {seatChunks[0],-40} | {ticket.WaitingSeats,-8} | INR {ticket.Fare,-6:F2}"
-            );
-
-            for (var i = 1; i < seatChunks.Count; i++)
-                Console.WriteLine(
-                    $"{string.Empty,-10} | {string.Empty,-8} | {string.Empty,-10} | {string.Empty,-10} | {string.Empty,-12} | {string.Empty,-10} | {seatChunks[i],-40} | {string.Empty,-8} | {string.Empty,-6}"
-                );
-        }
-    }
-
-    private List<string> FormatSeatChunks(List<Seat> seats, int chunkSize)
-    {
-        if (seats == null || seats.Count == 0)
-            return new List<string> { "-" };
-
-        return seats
-            .Select((seat, index) => new { seat.SeatNumber, index })
-            .GroupBy(x => x.index / chunkSize)
-            .Select(group => string.Join(", ", group.Select(x => x.SeatNumber)))
-            .ToList();
+        OutputHandler.DisplayReport(_tickets);
     }
 }

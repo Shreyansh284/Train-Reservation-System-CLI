@@ -2,12 +2,7 @@
 
 public class Route
 {
-    public Route()
-    {
-        RouteStations = new List<RouteStation>();
-    }
-
-    public List<RouteStation> RouteStations { get; }
+    public List<RouteStation> RouteStations { get; } = new();
 
     public void AddRouteStation(RouteStation routeStation)
     {

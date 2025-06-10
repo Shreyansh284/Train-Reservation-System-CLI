@@ -1,32 +1,27 @@
 ﻿namespace Train_Reservation_System_CLI.Models;
 
-public class Ticket
+public class Ticket(
+    int pnr,
+    int trainNumber,
+    string from,
+    string to,
+    DateOnly date,
+    CoachType coachType,
+    int seatsInWaiting,
+    List<Seat> bookedSeats,
+    int totalSeats,
+    double fare)
 {
-    public List<Seat> BookedSeats;
-    public CoachType CoachType;
-    public DateOnly Date;
-    public double Fare;
-    public string From;
-    public int PNR;
-    public string To;
-    public int TotalNoOfSeats;
-    public int TrainNumber;
-    public int WaitingSeats;
-
-    public Ticket(int pnr, int trainNumber, string from, string to, DateOnly date, CoachType coachType,
-        int seatsInWaiting, List<Seat> bookedSeats, int totalSeats, double fare)
-    {
-        PNR = pnr;
-        TrainNumber = trainNumber;
-        From = from;
-        To = to;
-        Date = date;
-        CoachType = coachType;
-        WaitingSeats = seatsInWaiting;
-        BookedSeats = bookedSeats;
-        TotalNoOfSeats = totalSeats;
-        Fare = fare;
-    }
+    public readonly List<Seat> BookedSeats = bookedSeats;
+    public readonly CoachType CoachType = coachType;
+    public DateOnly Date = date;
+    public double Fare = fare;
+    public readonly string From = from;
+    public readonly int PNR = pnr;
+    public readonly string To = to;
+    public int TotalNoOfSeats = totalSeats;
+    public readonly int TrainNumber = trainNumber;
+    public int WaitingSeats = seatsInWaiting;
 
 
     public override string ToString()

@@ -1,15 +1,9 @@
 ﻿namespace Train_Reservation_System_CLI.Models;
 
-public class Reservation
+public class Reservation(DateOnly date)
 {
-    public DateOnly Date { get; set; }
-    public List<BookedRoute> BookedRoutes { get; set; }
-
-    public Reservation(DateOnly date)
-    {
-        Date = date;
-        BookedRoutes = new List<BookedRoute>();
-    }
+    public DateOnly Date { get; set; } = date;
+    public List<BookedRoute> BookedRoutes { get; set; } = new();
 
     public void AddRequestedRoute(BookedRoute bookedRoute)
     {

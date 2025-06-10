@@ -1,5 +1,4 @@
-﻿using Train_Reservation_System_CLI.Execptions;
-using Train_Reservation_System_CLI.IOHandlers;
+﻿using Train_Reservation_System_CLI.IOHandlers;
 using Train_Reservation_System_CLI.Models;
 using Train_Reservation_System_CLI.Parsers;
 using Train_Reservation_System_CLI.Validators;
@@ -9,17 +8,8 @@ using static Train_Reservation_System_CLI.Utils.InputUtils;
 
 namespace Train_Reservation_System_CLI.Services;
 
-internal class BookingManager
+internal class BookingManager(TrainManager trainManager, TicketManager ticketManager)
 {
-    private readonly TicketManager ticketManager;
-    private readonly TrainManager trainManager;
-
-    public BookingManager(TrainManager trainManager, TicketManager ticketManager)
-    {
-        this.trainManager = trainManager;
-        this.ticketManager = ticketManager;
-    }
-
     public void HandleBookingFlow()
     {
         var request = ReadAndValidateBookingRequest();
@@ -35,19 +25,9 @@ internal class BookingManager
         try
         {
             var input = InputHandler.ReadInput("Enter Booking Details: (e.g., Ahmedabad Surat 2023-03-15 SL 3)");
-            var parts = SplitInput(input);
-
-            if (parts.Length != 5)
-                throw new InvalidInputExecption("Please enter details in the correct format.");
-
-            var request = BookingParser.ParseBookingDetails(parts);
-
-            if (request.NoOfSeats <= 0 || request.NoOfSeats > 24)
-                throw new InvalidInputExecption(OutputHandler.ErrorInvalidSeatCount(request.NoOfSeats));
-
-            if (request.Date < DateOnly.FromDateTime(DateTime.Today))
-                throw new InvalidInputExecption(OutputHandler.ErrorInvalidDate(request.Date));
-
+            var splitBookingInput = SplitInput(input);
+            BookingValidator.ValidateBookingInput(splitBookingInput);
+            var request = BookingParser.ParseBookingDetails(splitBookingInput);
             return request;
         }
         catch (Exception e)

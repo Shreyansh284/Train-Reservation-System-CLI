@@ -1,4 +1,4 @@
-﻿using Train_Reservation_System_CLI.Execptions;
+﻿using Train_Reservation_System_CLI.Exceptions;
 using Train_Reservation_System_CLI.IOHandlers;
 using Train_Reservation_System_CLI.Services;
 
@@ -6,18 +6,18 @@ namespace Train_Reservation_System_CLI;
 
 public class StartMenu
 {
-    private readonly BookingManager bookingManager;
-    private readonly CancellationManager cancellationManager;
-    private readonly TicketManager ticketManager;
-    private readonly TrainManager trainManager;
+    private readonly BookingManager _bookingManager;
+    private readonly CancellationManager _cancellationManager;
+    private readonly TicketManager _ticketManager;
+    private readonly TrainManager _trainManager;
 
 
     public StartMenu()
     {
-        trainManager = new TrainManager();
-        ticketManager = new TicketManager();
-        bookingManager = new BookingManager(trainManager, ticketManager);
-        cancellationManager = new CancellationManager(ticketManager);
+        _trainManager = new TrainManager();
+        _ticketManager = new TicketManager();
+        _bookingManager = new BookingManager(_trainManager, _ticketManager);
+        _cancellationManager = new CancellationManager(_ticketManager);
     }
 
     public void RunTrainOperationsMenu()
@@ -29,15 +29,15 @@ public class StartMenu
                 if (choice == 7) break;
                 ExecuteMenuOption(choice);
             }
-            catch (InvalidInputExecption ex)
+            catch (InvalidInputException ex)
             {
                 OutputHandler.PrintError(ex.Message);
-                OutputHandler.PrintBanner("Please Enter Details Again ");
-            }
-            catch (Exception ex)
-            {
-                OutputHandler.PrintError(ex.Message);
-                OutputHandler.PrintBanner("Please Enter Details Again ");
+                OutputHandler.PrintBanner("Please Enter Choice Again");
+            }                                           
+            catch (Exception ex)                        
+            {                                           
+                OutputHandler.PrintError(ex.Message);   
+                OutputHandler.PrintBanner("Please Enter Choice Again ");
             }
     }
 
@@ -46,22 +46,22 @@ public class StartMenu
         switch (choice)
         {
             case 1:
-                trainManager.AddTrains();
+                _trainManager.AddTrains();
                 break;
             case 2:
-                bookingManager.HandleBookingFlow();
+                _bookingManager.HandleBookingFlow();
                 break;
             case 3:
-                trainManager.GetAllTrains();
+                _trainManager.GetAllTrains();
                 break;
             case 4:
-                ticketManager.GetBookingDetailsByPNR();
+                _ticketManager.GetBookingDetailsByPNR();
                 break;
             case 5:
-                ticketManager.GenerateBookingReport();
+                _ticketManager.GenerateBookingReport();
                 break;
             case 6:
-                cancellationManager.HandleCancellation();
+                _cancellationManager.HandleCancellation();
                 break;
             default:
                 OutputHandler.PrintError("Invalid Choice");

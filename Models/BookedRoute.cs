@@ -1,13 +1,7 @@
 ﻿namespace Train_Reservation_System_CLI.Models;
 
-public class BookedRoute
+public class BookedRoute(string fromStation, string toStation)
 {
-    public string FromStation { get; set; }
-   public string ToStation { get; set; }
-
-    public BookedRoute(string fromStation, string toStation)
-    {
-        FromStation = fromStation;
-        ToStation = toStation;
-    }
+    public string FromStation { get; set; } = fromStation;
+    public string ToStation { get; set; } = toStation;
 }

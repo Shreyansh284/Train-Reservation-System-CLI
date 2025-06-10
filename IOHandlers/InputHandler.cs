@@ -7,7 +7,7 @@ public static class InputHandler
     public static string ReadInput(string message)
     {
         OutputHandler.PrintBanner(message);
-        var input = Console.ReadLine();
+        string input = Console.ReadLine();
         return input;
     }
 
