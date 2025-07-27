@@ -1,6 +1,7 @@
 ﻿namespace Train_Reservation_System_CLI.Models;
 
 public class Reservation(DateOnly date)
+
 {
     public DateOnly Date { get; set; } = date;
     public List<BookedRoute> BookedRoutes { get; set; } = new();
