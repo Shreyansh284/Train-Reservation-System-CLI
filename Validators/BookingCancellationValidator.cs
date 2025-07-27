@@ -6,6 +6,7 @@ namespace Train_Reservation_System_CLI.Validators;
 
 public static class BookingCancellationValidator
 {
+    private const int MaxMinInputLength = 2;
     public static void ValidateNumbersOfSeatsToCancel(int seatsToCancel, Ticket ticket)
     {
         if (seatsToCancel > ticket.TotalNoOfSeats)
@@ -13,7 +14,7 @@ public static class BookingCancellationValidator
     }
     public static void ValidateCancellationInput(string[] input)
     {
-        if(input.Length<2||input.Length>2)
+        if(input.Length<MaxMinInputLength||input.Length>MaxMinInputLength)
         {
             throw new InvalidInputException("Please Enter  PNR & Seats As Given Above");
         }
