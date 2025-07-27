@@ -1,0 +1,74 @@
+Input 1 - Add Train
+
+Enter No Of Train To Add : eg.. - 1
+
+17726 Rajkot-0 Ahmedabad-200 Vadodara-300 Surat-500 Mumbai-750
+
+17226 S1-72 S2-72 B1-72 A1-48 H1-24
+
+Output 
+It Train Will Be Added
+
+------------------------------------
+
+Input 2 - Book Train 
+
+Ahmedabad Surat 2023-03-15 SL 3
+
+Output -- Current Only One Train
+17726 -- Enter This Number To Book In That Train
+
+-------------------------------------------
+
+Booking Will Be Done In Train Either Confirmed Or Waiting
+
+-------------------------------------------------------
+
+Input --3 Get All Train
+Output -- It Will Displayed All Train
+
+-------------------------------------------------------
+
+Input -- 4 Enter PNR to Get Booking Detail
+
+1000001
+
+Output -- Booking Details
+
+-----------------------------------------------------------------
+
+Input --- 5 Report
+
+Output -- It Will Display All Tickets
+Eg..
+
+ PNR,          DATE,    TRAIN,   FROM,     TO,  FARE,   SEATS
+100000001, 2023-03-15, 17726, Ahmedabad, Surat, 900, S1-1 S1-2 S1-3
+100000002, 2023-03-15, 17726, Ahmedabad, Surat, 2400, H1-1 H1-2
+100000003, 2023-03-15, 29772, Vadodara, Indore, 700, S1-1 S1-2
+
+
+--------------------------------------------
+
+Input 6 -- Ticket Cancellation
+
+1000001 5 
+
+Output
+
+It will Cancel 5 Tickets --- And Assign To First One Who is Waiting and So on ....
+
+----------------------------------------------
+
+Input 7 - Exit 
+😅
+
+
+
+
+
+
+
+
+
+
